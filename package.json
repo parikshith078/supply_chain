@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typegen": "npx pocketbase-typegen --out 'src/db/pocketbase-type.ts' --env"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
@@ -16,6 +17,7 @@
     "hardhat": "^2.22.2",
     "lucide-react": "^0.363.0",
     "next": "14.1.4",
+    "pocketbase": "^0.21.1",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.2.2",
