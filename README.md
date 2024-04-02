@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Agriculture Supply Chain Implementation using Blockchain
 
-## Getting Started
+This project uses blockchain technology to create an agriculture supply chain solution. Consumers can trace their food products back to the source using smart contracts written in Solidity.
 
-First, run the development server:
+### Tech Stack:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<div align="center">
+    <img src="https://skillicons.dev/icons?i=solidity,typescript,nextjs,tailwind" /><br>
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Main Features:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-  Farmers can create contracts by listing agriculture products on the site.
+-  Processors can purchase products from farmers.
+-  Distributors can buy from processors.
+-  Retailers can purchase from distributors.
+-  Consumers can track the products from retailers.
+-  Admin panel for managing and listing all actors (farmers, processors, distributors, retailers).
+-  QR codes enable tracking of products from farm to fork by analyzing transactions on the smart contracts.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Project Components:
 
-## Learn More
+1. **Client Side:**
+<div align="center">
+  
+![Screenshot 2024-04-02 at 6 10 58 AM](https://github.com/parikshith078/supply_chain/assets/90703086/53b85225-04ad-42e1-8436-d90faa92504f)
 
-To learn more about Next.js, take a look at the following resources:
+</div>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Smart Contract:**
+<div align="center">
+  
+![Screenshot 2024-04-02 at 6 12 11 AM](https://github.com/parikshith078/supply_chain/assets/90703086/cc0b219c-e2b7-417e-8b0a-5891609da202)
+  
+</div>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. **Data Model:**
+<div align="center">
+  
+![Screenshot 2024-04-02 at 6 11 42 AM](https://github.com/parikshith078/supply_chain/assets/90703086/79367f4d-7fdc-40af-8d45-628ad5844e82)
 
-## Deploy on Vercel
+</div>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+### Reference:
+
+-  **IEEE Paper:** L. Wang et al., "Smart Contract-Based Agricultural Food Supply Chain Traceability," in IEEE Access, vol. 9, pp. 9296-9307, 2021. [DOI: 10.1109/ACCESS.2021.3050112](https://doi.org/10.1109/ACCESS.2021.3050112)
+  
+**Keywords:** Supply chains, Blockchain, Smart contracts, Radiofrequency identification, Food safety, Agricultural products, Traceability.
+
+---
