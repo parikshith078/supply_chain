@@ -5,6 +5,13 @@ import { dbEnv } from "./dbTypes";
 
 const env = process.env as unknown as dbEnv
 
+export function testAdd(...numbers: number[]){
+	let sum = 0
+	for(let i=0; i<numbers.length; i++){
+		sum += numbers[i]
+	}
+	return sum
+}
 
 export const db = new PocketBase(env.DB_URL) as TypedPocketBase
 
