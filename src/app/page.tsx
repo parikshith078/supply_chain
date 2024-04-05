@@ -1,14 +1,11 @@
 import { Button } from "@/components/ui/button";
 import Nav from "@/components/ui/nav";
-import { getData } from "@/db/pocketbase";
+import { adminAuth } from "@/db/pocketbase";
 
 export default async function Home() {
-  const data = await getData()
+  const data = await adminAuth()
 
-  async function handleClick() {
-    await getData()
-  }
-
+  console.log(data)
 
   return (
     <div>
