@@ -7,6 +7,7 @@ import NavBar from "./_components/NavBar";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 
+
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",

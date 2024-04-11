@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import {
   SignInWithMetamaskButton,
@@ -7,10 +8,12 @@ import {
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
+
 // TODO: Update Update avatar menu options href and discription
 // TODO: Update logo
 
 export default function NavBar() {
+
   // const avatarUrl = `https://api.dicebear.com/8.x/identicon/svg?seed=${userName}`;
   return (
     <div className="flex mx-5 justify-between mt-1 mb-6 items-center">
@@ -32,3 +35,4 @@ export default function NavBar() {
     </div>
   );
 }
+
