@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "./_components/Header";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
           )}
         >
           {/* <NavBar /> */}
+          <SpeedInsights />
           <div className="flex min-h-screen w-full flex-col">
             <Header />
             {children}
