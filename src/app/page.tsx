@@ -32,7 +32,7 @@ export default function Dashboard() {
   useEffect( () => {
     async function fetchData() {
       const data = getTransactions(10);
-      console.log(data);
+      // console.log(data);
       setTransactionData(data);
     }
     fetchData();
@@ -88,7 +88,7 @@ export default function Dashboard() {
             </div>
             {/*TODO: Add a action button here */}
             <SignedIn>
-              <Button className="ml-auto gap-1">
+              <Button asChild className="ml-auto gap-1">
                 <SignOutButton />
                 {/* <Link href="/orders"> */}
                 {/*   See orders */}
