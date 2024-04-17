@@ -1,7 +1,7 @@
 import { ActorTypeOptions } from "@/db/pocketbase-type";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Package2 } from "lucide-react";
+import { Menu, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type NavItemType = {
@@ -11,12 +11,20 @@ type NavItemType = {
 
 const farmerNav: NavItemType[] = [
   {
+    label: "Inventory",
+    href: "/inventory",
+  },
+  {
     label: "Sales",
     href: "/received",
   },
 ];
 
 const distributorAndProcessorNav: NavItemType[] = [
+  {
+    label: "Inventory",
+    href: "/inventory",
+  },
   {
     label: "Orders",
     href: "/placed",
@@ -48,7 +56,7 @@ export function NavList({ actorType }: { actorType: ActorTypeOptions }) {
         href="/"
         className="flex items-center gap-2 text-lg font-semibold md:text-base"
       >
-        <Package2 className="h-6 w-6" />
+        <UtensilsCrossed className="h-6 w-6" />
         <span className="sr-only">Toggle navigation menu</span>
       </Link>
       {/* TODO: conditonaly render color based on active page */}
@@ -98,11 +106,11 @@ export function MobilNavList({ actorType }: { actorType: ActorTypeOptions }) {
             href="#"
             className="flex items-center gap-2 text-lg font-semibold"
           >
-            <Package2 className="h-6 w-6" />
+            <UtensilsCrossed className="h-6 w-6" />
             <span className="sr-only">Farm to Fork</span>
           </Link>
           <Link href="#" className="hover:text-foreground">
-            Dashboard {actorType ?? actorType}
+            Dashboard
           </Link>
           {actorType == ActorTypeOptions.farmer && (
             <NavItemsList

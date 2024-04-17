@@ -45,6 +45,7 @@ export default function Header() {
         </SignedIn>
         <SignedOut>
           <SignInWithMetamaskButton>
+            {/* TODO: show error toast if no metamask  */}
             <Button>Connect Wallet</Button>
           </SignInWithMetamaskButton>
         </SignedOut>
