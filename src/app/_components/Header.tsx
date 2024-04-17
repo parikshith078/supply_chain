@@ -1,14 +1,4 @@
-import {
-  Activity,
-  ArrowUpRight,
-  CircleUser,
-  CreditCard,
-  DollarSign,
-  Menu,
-  Package2,
-  Search,
-  Users,
-} from "lucide-react";
+import { CircleUser, Menu, Package2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -77,23 +66,9 @@ export default function Header() {
       {/* TODO: Update dropdown menu options */}
       <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <SignedIn>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <SignOutButton />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button>
+            <Link href="/register">Register</Link>
+          </Button>
         </SignedIn>
         <SignedOut>
           <SignInWithMetamaskButton>
@@ -102,5 +77,27 @@ export default function Header() {
         </SignedOut>
       </div>
     </header>
+  );
+}
+
+function Component() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="secondary" size="icon" className="rounded-full">
+          <CircleUser className="h-5 w-5" />
+          <span className="sr-only">Toggle user menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <SignOutButton />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
