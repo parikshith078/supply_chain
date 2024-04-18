@@ -37,8 +37,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { useEdgeStore } from "@/lib/edgeStore";
+import { createProductAction } from "@/actions/createListing";
 
-export default function RegisterForm() {
+export default function RegisterForm({
+  params,
+}: {
+  params: { product_id: string };
+}) {
   const [loading, setLoading] = useState(false);
   const form = useForm<createProductFromSchemaType>({
     resolver: zodResolver(createProductFromScheme),
@@ -46,10 +52,13 @@ export default function RegisterForm() {
       description: "",
       quantity: 1,
       price: 1,
+      catalogProductId: params.product_id,
+      fileUrl: "",
     },
   });
 
   const imageFileRef = form.register("image");
+  const { edgestore } = useEdgeStore();
 
   return (
     <Card className="mx-auto max-w-sm my-auto">
@@ -64,7 +73,14 @@ export default function RegisterForm() {
           <form
             onSubmit={form.handleSubmit(async (formData) => {
               setLoading(true);
+              const file = formData.image[0];
+              const res = await edgestore.publicFiles.upload({
+                file,
+              });
+              console.log(res.url);
+              formData.fileUrl = res.url;
               console.log(formData);
+              await createProductAction(formData);
               toast({
                 title: "Success!",
                 description: "Successfully registered!",
@@ -85,6 +101,32 @@ export default function RegisterForm() {
                       className="resize-none"
                       {...field}
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="catalogProductId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="hidden" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="fileUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="hidden" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,6 +173,7 @@ export default function RegisterForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
+                          type="submit"
                           variant={"outline"}
                           className={cn(
                             "w-[240px] pl-3 text-left font-normal",

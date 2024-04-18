@@ -3,7 +3,7 @@ import {
   Collections,
   TypedPocketBase,
   ActorRecord,
-  ActorTypeOptions,
+  ProductRecord,
 } from "./pocketbase-type";
 import { dbEnv } from "./dbTypes";
 import { registrationFormSchemaType } from "@/lib/formValidation";
@@ -13,6 +13,7 @@ const env = process.env as unknown as dbEnv;
 const db = new PocketBase(env.DB_URL) as TypedPocketBase;
 
 //TODO: Export a enum with aall functions
+//TODO: Deal with adminAuth 
 
 export async function adminAuth() {
   await db.admins.authWithPassword(
@@ -22,16 +23,34 @@ export async function adminAuth() {
   console.log("authenticated as admin");
 }
 
+export async function createProductListing(record: ProductRecord) {
+  console.log("Listing...");
+  try {
+    const res = await db.collection(Collections.Product).create(record);
+    return res.id;
+  } catch (err) {
+    console.error("Error while create product", err);
+  }
+}
+
 export async function getAllCatalogProducts() {
-  console.log("Geting list...")
-  const res = await db.collection(Collections.ProductCatalog).getList();
-  return res
+  try {
+    console.log("Geting list...");
+    const res = await db.collection(Collections.ProductCatalog).getList();
+    return res;
+  } catch (err) {
+    console.error("Error while geting catelog products", err);
+  }
 }
 
 export async function getCatalogProductById(id: string) {
-  console.log("Geting product by id...")
-  const res = await db.collection(Collections.ProductCatalog).getOne(id)
-  return res
+  try {
+    console.log("Geting product by id...");
+    const res = await db.collection(Collections.ProductCatalog).getOne(id);
+    return res;
+  } catch (err) {
+    console.error("Error while geting catelog product by id", err);
+  }
 }
 
 export async function createActor(

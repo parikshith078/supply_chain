@@ -1,11 +1,13 @@
 "use server";
-import { adminAuth, createActor } from "@/db/pocketbase";
-import { registrationFormSchemaType } from "@/lib/formValidation";
+import { adminAuth, createActor, createProductListing } from "@/db/pocketbase";
+import { ProductRecord } from "@/db/pocketbase-type";
+import {
+  createProductFromSchemaType,
+  registrationFormSchemaType,
+} from "@/lib/formValidation";
 import { clerkClient, currentUser } from "@clerk/nextjs";
-// import { revalidatePath } from "next/cache";
 
 export async function register(formData: registrationFormSchemaType) {
-  // console.log(formData);
   // TODO: Server side error handling and communicate to the client
   const user = await currentUser();
   if (!user) {
@@ -16,6 +18,7 @@ export async function register(formData: registrationFormSchemaType) {
     const wallet = user.web3Wallets[0].web3Wallet;
     console.log(wallet);
     await adminAuth();
+    console.log("Auth as admin");
     const res = await createActor(formData, wallet);
     await clerkClient.users.updateUserMetadata(user.id, {
       publicMetadata: {
@@ -24,11 +27,8 @@ export async function register(formData: registrationFormSchemaType) {
         actorType: formData.type,
       },
     });
-    const getUserMeta = await currentUser();
-    console.log(getUserMeta?.publicMetadata);
-    console.log("Created actor");
-    // revalidatePath('/')
   } catch (err) {
     console.error("Error while creating actor, ", err);
   }
 }
+

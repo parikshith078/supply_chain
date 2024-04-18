@@ -13,6 +13,8 @@ export const createProductFromScheme = z.object({
   description: z.string().min(2),
   quantity: z.coerce.number().min(1),
   price: z.coerce.number().min(1),
+  fileUrl: z.string(),
+  catalogProductId: z.string(),
   image: z
     .instanceof(FileList)
     .refine((file) => file?.length == 1, "File is required."),

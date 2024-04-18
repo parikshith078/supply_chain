@@ -84,6 +84,7 @@ export type ProductRecord = {
 	contract_id: string
 	data_of_harvest: IsoDateString
 	discription: string
+	image: string
 	is_aviliable?: boolean
 	owner: RecordIdString
 	price: number
