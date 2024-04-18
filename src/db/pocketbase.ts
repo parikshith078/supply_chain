@@ -28,6 +28,12 @@ export async function getAllCatalogProducts() {
   return res
 }
 
+export async function getCatalogProductById(id: string) {
+  console.log("Geting product by id...")
+  const res = await db.collection(Collections.ProductCatalog).getOne(id)
+  return res
+}
+
 export async function createActor(
   data: registrationFormSchemaType,
   wallet: string,

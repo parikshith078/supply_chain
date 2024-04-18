@@ -1,5 +1,5 @@
 "use client";
-
+import { format } from "date-fns";
 import {
   Card,
   CardContent,
@@ -19,40 +19,44 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { register } from "@/actions/register";
-import { registrationFormSchema, registrationFormSchemaType } from "@/lib/formValidation";
+  createProductFromScheme,
+  createProductFromSchemaType,
+} from "@/lib/formValidation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const form = useForm<registrationFormSchemaType>({
-    resolver: zodResolver(registrationFormSchema),
+  const form = useForm<createProductFromSchemaType>({
+    resolver: zodResolver(createProductFromScheme),
     defaultValues: {
-      name: "",
-      email: "",
-      address: "",
+      description: "",
+      quantity: 1,
+      price: 1,
     },
   });
+
+  const imageFileRef = form.register("image");
 
   return (
     <Card className="mx-auto max-w-sm my-auto">
       <CardHeader>
-        <CardTitle className="text-xl">Register as a business</CardTitle>
+        <CardTitle className="text-xl">Create product listing</CardTitle>
         <CardDescription>
-          Enter your information to create a business account
+          Enter your product details and get it listed.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -60,13 +64,10 @@ export default function RegisterForm() {
           <form
             onSubmit={form.handleSubmit(async (formData) => {
               setLoading(true);
-              await register(formData).then(() => {
-                router.push("/");
-                // TODO: Fix toast not wokring 
-                toast({
-                  title: "Success!",
-                  description: "Successfully registered!",
-                });
+              console.log(formData);
+              toast({
+                title: "Success!",
+                description: "Successfully registered!",
               });
               setLoading(false);
             })}
@@ -74,79 +75,103 @@ export default function RegisterForm() {
           >
             <FormField
               control={form.control}
-              name="name"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Mark" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Account Type</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder="Select account type"
-                          {...field}
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="farmer">Farmer</SelectItem>
-                      <SelectItem value="processor">Processor</SelectItem>
-                      <SelectItem value="distributor">Distributor</SelectItem>
-                      <SelectItem value="retailer">Retailer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="mark@gmail.com" {...field} />
-                  </FormControl>
-                  <FormDescription>Primary contact info</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="33 Main St, New York, NY 10001, USA"
+                      placeholder="Fresh from farm"
                       className="resize-none"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Your primary shipping address
-                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+
+                  <FormDescription>Per Kilogram</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total stock</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormDescription>In Kilograms</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateOfHarvest"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Date of harvest</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date: any) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Select Image</FormLabel>
+                  <FormControl>
+                    <Input accept="image/*" type="file" {...imageFileRef} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
