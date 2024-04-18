@@ -1,10 +1,10 @@
 "use server";
 import { adminAuth, createActor } from "@/db/pocketbase";
-import { formSchemaType } from "@/lib/formValidation";
+import { registrationFormSchemaType } from "@/lib/formValidation";
 import { clerkClient, currentUser } from "@clerk/nextjs";
 // import { revalidatePath } from "next/cache";
 
-export async function register(formData: formSchemaType) {
+export async function register(formData: registrationFormSchemaType) {
   // console.log(formData);
   // TODO: Server side error handling and communicate to the client
   const user = await currentUser();

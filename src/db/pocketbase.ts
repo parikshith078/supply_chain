@@ -6,7 +6,7 @@ import {
   ActorTypeOptions,
 } from "./pocketbase-type";
 import { dbEnv } from "./dbTypes";
-import { formSchemaType } from "@/lib/formValidation";
+import { registrationFormSchemaType } from "@/lib/formValidation";
 
 const env = process.env as unknown as dbEnv;
 
@@ -22,7 +22,16 @@ export async function adminAuth() {
   console.log("authenticated as admin");
 }
 
-export async function createActor(data: formSchemaType, wallet: string) {
+export async function getAllCatalogProducts() {
+  console.log("Geting list...")
+  const res = await db.collection(Collections.ProductCatalog).getList();
+  return res
+}
+
+export async function createActor(
+  data: registrationFormSchemaType,
+  wallet: string,
+) {
   const record: ActorRecord = {
     address: data.address,
     email: data.email,

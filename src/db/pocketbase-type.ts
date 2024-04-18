@@ -85,6 +85,7 @@ export type ProductRecord = {
 	data_of_harvest: IsoDateString
 	discription: string
 	is_aviliable?: boolean
+	owner: RecordIdString
 	price: number
 	product: RecordIdString
 	qr_code: string

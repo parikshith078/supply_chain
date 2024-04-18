@@ -38,9 +38,9 @@ export default function Header() {
           {user?.publicMetadata.registered ? (
             <UserDropdownMenu />
           ) : (
-            <Button>
-              <Link href="/register">Register </Link>
-            </Button>
+            <Link href="/register">
+              <Button>Register</Button>
+            </Link>
           )}
         </SignedIn>
         <SignedOut>
