@@ -1,66 +1,38 @@
 "use client";
+
+import { createProductAction } from "@/actions/createListing";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
-  CardContent,
-  CardDescription,
   CardHeader,
+  CardDescription,
   CardTitle,
+  CardContent,
 } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import {
-  createProductFromScheme,
-  createProductFromSchemaType,
-} from "@/lib/formValidation";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useEdgeStore } from "@/lib/edgeStore";
-import { createProductAction } from "@/actions/createListing";
 
-export default function RegisterForm({
+export default function CreateProductListing({
   params,
 }: {
   params: { product_id: string };
 }) {
-  const [loading, setLoading] = useState(false);
-  const form = useForm<createProductFromSchemaType>({
-    resolver: zodResolver(createProductFromScheme),
-    defaultValues: {
-      description: "",
-      quantity: 1,
-      price: 1,
-      catalogProductId: params.product_id,
-      fileUrl: "",
-    },
-  });
-
-  const imageFileRef = form.register("image");
   const { edgestore } = useEdgeStore();
-
+  const [date, setDate] = useState<Date>();
   return (
+    // TODO: Handle form validation
     <Card className="mx-auto max-w-sm my-auto">
       <CardHeader>
         <CardTitle className="text-xl">Create product listing</CardTitle>
@@ -69,162 +41,48 @@ export default function RegisterForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(async (formData) => {
-              setLoading(true);
-              const file = formData.image[0];
-              const res = await edgestore.publicFiles.upload({
-                file,
-              });
-              console.log(res.url);
-              formData.fileUrl = res.url;
-              console.log(formData);
-              await createProductAction(formData);
-              toast({
-                title: "Success!",
-                description: "Successfully registered!",
-              });
-              setLoading(false);
-            })}
-            className="space-y-5"
-          >
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Fresh from farm"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="catalogProductId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input type="hidden" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="fileUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input type="hidden" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-
-                  <FormDescription>Per Kilogram</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total stock</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>In Kilograms</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dateOfHarvest"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of harvest</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          type="submit"
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date: any) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="image"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Select Image</FormLabel>
-                  <FormControl>
-                    <Input accept="image/*" type="file" {...imageFileRef} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button disabled={loading} type="submit" className="w-full">
-              Submit
-            </Button>
-          </form>
-        </Form>
+        <form
+          className="flex flex-col gap-10"
+          action={async (formData: FormData) => {
+            const image = formData.get("image") as File;
+            console.log("image from client: ", image);
+            const res = await edgestore.publicFiles.upload({file: image});
+            console.log('image url: ', res.url)
+            await createProductAction(formData, date as Date, res.url);
+          }}
+        >
+          <Label>Description</Label>
+          <Textarea name="discription" placeholder="hello here" />
+          <Input type="hidden" name="productId" value={params.product_id} />
+          <Label>Price</Label>
+          <Input type="number" name="price" />
+          <Label>Total stock</Label>
+          <Input type="number" name="stock" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !date && "text-muted-foreground",
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+          <Input accept="image/*" type="file" name="image" />
+          <Button>Submit</Button>
+        </form>
       </CardContent>
     </Card>
   );
