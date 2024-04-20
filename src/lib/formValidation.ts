@@ -8,18 +8,18 @@ export const registrationFormSchema = z.object({
 });
 export type registrationFormSchemaType = z.infer<typeof registrationFormSchema>;
 
-export const createProductFromScheme = z.object({
-  dateOfHarvest: z.date(),
-  description: z.string().min(2),
-  quantity: z.coerce.number().min(1),
-  price: z.coerce.number().min(1),
-  fileUrl: z.string().url(),
-  catalogProductId: z.string(),
-  image: z
-    .instanceof(FileList)
-    .refine((file) => file?.length == 1, "File is required."),
-});
-
-export type createProductFromSchemaType = z.infer<
-  typeof createProductFromScheme
->;
+// export const createProductFromScheme = z.object({
+//   dateOfHarvest: z.date(),
+//   description: z.string().min(2),
+//   quantity: z.coerce.number().min(1),
+//   price: z.coerce.number().min(1),
+//   fileUrl: z.string().url(),
+//   catalogProductId: z.string(),
+//   image: z
+//     .instanceof(FileList)
+//     .refine((file) => file?.length == 1, "File is required."),
+// });
+//
+// export type createProductFromSchemaType = z.infer<
+//   typeof createProductFromScheme
+// >;

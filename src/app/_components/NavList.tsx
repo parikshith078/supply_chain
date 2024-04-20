@@ -85,14 +85,19 @@ export function NavList({ actorType }: { actorType: ActorType }) {
           navList={retailerNav}
         />
       )}
+      {actorType == ActorType.PROCESSOR && (
+        <NavItemsList
+          styles="text-muted-foreground transition-colors hover:text-foreground"
+          navList={distributorAndProcessorNav}
+        />
+      )}
 
-      {actorType == ActorType.PROCESSOR ||
-        (actorType == ActorType.DISTRIBUTOR && (
-          <NavItemsList
-            styles="text-muted-foreground transition-colors hover:text-foreground"
-            navList={distributorAndProcessorNav}
-          />
-        ))}
+      {actorType == ActorType.DISTRIBUTOR && (
+        <NavItemsList
+          styles="text-muted-foreground transition-colors hover:text-foreground"
+          navList={distributorAndProcessorNav}
+        />
+      )}
     </nav>
   );
 }
@@ -132,13 +137,19 @@ export function MobilNavList({ actorType }: { actorType: ActorType }) {
             />
           )}
 
-          {actorType == ActorType.PROCESSOR ||
-            (actorType == ActorType.DISTRIBUTOR && (
-              <NavItemsList
-                styles="text-muted-foreground hover:text-foreground"
-                navList={distributorAndProcessorNav}
-              />
-            ))}
+          {actorType == ActorType.PROCESSOR && (
+            <NavItemsList
+              styles="text-muted-foreground hover:text-foreground"
+              navList={distributorAndProcessorNav}
+            />
+          )}
+
+          {actorType == ActorType.DISTRIBUTOR && (
+            <NavItemsList
+              styles="text-muted-foreground hover:text-foreground"
+              navList={distributorAndProcessorNav}
+            />
+          )}
         </nav>
       </SheetContent>
     </Sheet>

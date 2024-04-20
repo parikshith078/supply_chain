@@ -1,9 +1,6 @@
 "use server";
 
 import { prisma } from "@/db/client";
-import { adminAuth, createProductListing } from "@/db/pocketbase";
-import { ProductRecord } from "@/db/pocketbase-type";
-import { createProductFromSchemaType } from "@/lib/formValidation";
 import { currentUser } from "@clerk/nextjs";
 
 export async function createProductAction(
@@ -25,37 +22,30 @@ export async function createProductAction(
   const userRecordId = user.publicMetadata.recordId;
   console.log(userRecordId);
 
+  // TODO: do form validation
+
   try {
-    const actor = await prisma.actor.create({
-      data: {
-        name: "parikshith",
-        actorType: "FARMER",
-        address: "testing with data",
-        publicKey: "public keys",
-        email: "parikshith@gmail.com",
-      },
-    });
-    console.log(actor);
-    const catalog = await prisma.catalog.create({
-      data: {
-        category: "FRUITS",
-        discription: "This is test discription",
-        msp: 89.1,
-        name: "Bannana",
-      },
-    });
+    const catalog = await prisma.catalog
+      .findUnique({
+        where: {
+          id: formData.get("productId"),
+        },
+      })
+      .catch((err) => console.log("Error while fetching category: ", err));
+    // TODO: add contract id to product register
     const productList = await prisma.product.create({
       data: {
-        discrption: "product discription",
-        category: "FRUITS",
-        dateOfHarvest: new Date(),
-        price: 90,
-        quantity: 89,
+        discrption: formData.get("discription"),
+        category: catalog!.category,
+        dateOfHarvest: date,
+        price: parseFloat(formData.get("price")),
+        quantity: parseInt(formData.get("stock")),
         contractId: "testing",
-        ownerId: actor.id,
-        catalogId: catalog.id,
-        isAvialable: true,
-        name: "Test name",
+        ownerId: userRecordId as string,
+        catalogId: catalog!.id,
+        isAvialable: false,
+        name: catalog!.name,
+        imageUrl: url,
       },
     });
 
@@ -64,3 +54,4 @@ export async function createProductAction(
     console.log("Error while creating actor: ", err);
   }
 }
+

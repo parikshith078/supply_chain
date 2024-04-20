@@ -89,9 +89,6 @@ dependencies:
   next:
     specifier: 14.1.4
     version: 14.1.4(react-dom@18.2.0)(react@18.2.0)
-  pocketbase:
-    specifier: ^0.21.1
-    version: 0.21.1
   react:
     specifier: ^18
     version: 18.2.0
@@ -6665,10 +6662,6 @@ packages:
       mlly: 1.6.1
       pathe: 1.1.2
     dev: true
-
-  /pocketbase@0.21.1:
-    resolution: {integrity: sha512-0PvCP4pKtxsV9kwldEGyibEvhwOcx9jSCrz3WN5CgPILJfM0z76f1op9WE8/8UgikDsMdRsc5iBLfKintrJS1g==}
-    dev: false
 
   /possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}

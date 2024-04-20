@@ -31,6 +31,7 @@ export default function CreateProductListing({
 }) {
   const { edgestore } = useEdgeStore();
   const [date, setDate] = useState<Date>();
+  const [loading, setLoading] = useState(false)
   return (
     // TODO: Handle form validation
     <Card className="mx-auto max-w-sm my-auto">
@@ -44,11 +45,13 @@ export default function CreateProductListing({
         <form
           className="flex flex-col gap-10"
           action={async (formData: FormData) => {
+            setLoading(true)
             const image = formData.get("image") as File;
             console.log("image from client: ", image);
             const res = await edgestore.publicFiles.upload({file: image});
             console.log('image url: ', res.url)
             await createProductAction(formData, date as Date, res.url);
+            setLoading(false)
           }}
         >
           <Label>Description</Label>
@@ -81,7 +84,7 @@ export default function CreateProductListing({
             </PopoverContent>
           </Popover>
           <Input accept="image/*" type="file" name="image" />
-          <Button>Submit</Button>
+          <Button disabled={loading} >Submit</Button>
         </form>
       </CardContent>
     </Card>

@@ -7,6 +7,7 @@ import { clerkClient, currentUser } from "@clerk/nextjs";
 
 export async function register(formData: registrationFormSchemaType) {
   // TODO: Server side error handling and communicate to the client
+  console.log("Registering user")
   const user = await currentUser();
   if (!user) {
     console.log("User is not authenticated");

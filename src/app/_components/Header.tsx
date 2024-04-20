@@ -18,7 +18,6 @@ import {
   SignedOut,
   useUser,
 } from "@clerk/nextjs";
-import { ActorTypeOptions } from "@/db/pocketbase-type";
 
 export default function Header() {
   // type UserPublicData = {
@@ -29,10 +28,8 @@ export default function Header() {
   const { user } = useUser();
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-      <NavList actorType={user?.publicMetadata.actorType as ActorTypeOptions} />
-      <MobilNavList
-        actorType={user?.publicMetadata.actorType as ActorTypeOptions}
-      />
+      <NavList actorType={user?.publicMetadata.actorType as any} />
+      <MobilNavList actorType={user?.publicMetadata.actorType as any} />
       <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <SignedIn>
           {user?.publicMetadata.registered ? (
