@@ -1,5 +1,6 @@
 "use server";
 
+import { prisma } from "@/db/client";
 import { adminAuth, createProductListing } from "@/db/pocketbase";
 import { ProductRecord } from "@/db/pocketbase-type";
 import { createProductFromSchemaType } from "@/lib/formValidation";
@@ -23,37 +24,43 @@ export async function createProductAction(
   }
   const userRecordId = user.publicMetadata.recordId;
   console.log(userRecordId);
-  const tesRecord: ProductRecord = {
-    product: "vetwf66sp3l2k22",
-    data_of_harvest: "2022-01-01 10:00:00.123Z",
-    discription: "test",
-    qunatity: 123,
-    is_aviliable: true,
-    price: 123,
-    contract_id: "test",
-    qr_code: "https://example.com",
-    owner: "6adqv8xs1d837ac",
-    image: "https://example.com",
-  };
-  const record: ProductRecord = {
-    contract_id: "testing",
-    data_of_harvest: date.toISOString(),
-    discription: formData.get("discription"),
-    image: url,
-    owner: userRecordId as string,
-    price: formData.get("price"),
-    is_aviliable: true,
-    product: formData.get("productId"),
-    qr_code: "https://farm-to-fork.vercel.app",
-    qunatity: formData.get("stock"),
-  };
 
   try {
-    await adminAuth();
-    console.log("Creating listing...");
-    const res = await createProductListing(tesRecord);
-    return res;
+    const actor = await prisma.actor.create({
+      data: {
+        name: "parikshith",
+        actorType: "FARMER",
+        address: "testing with data",
+        publicKey: "public keys",
+        email: "parikshith@gmail.com",
+      },
+    });
+    console.log(actor);
+    const catalog = await prisma.catalog.create({
+      data: {
+        category: "FRUITS",
+        discription: "This is test discription",
+        msp: 89.1,
+        name: "Bannana",
+      },
+    });
+    const productList = await prisma.product.create({
+      data: {
+        discrption: "product discription",
+        category: "FRUITS",
+        dateOfHarvest: new Date(),
+        price: 90,
+        quantity: 89,
+        contractId: "testing",
+        ownerId: actor.id,
+        catalogId: catalog.id,
+        isAvialable: true,
+        name: "Test name",
+      },
+    });
+
+    console.log(productList);
   } catch (err) {
-    console.error("Error while create product lising: ", err);
+    console.log("Error while creating actor: ", err);
   }
 }
