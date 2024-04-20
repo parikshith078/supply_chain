@@ -16,8 +16,12 @@ import {
   SignOutButton,
   SignedIn,
   SignedOut,
+  useClerk,
   useUser,
 } from "@clerk/nextjs";
+import { prisma } from "@/db/client";
+import { useRouter } from "next/navigation";
+import { deRegister } from "@/actions/register";
 
 export default function Header() {
   // type UserPublicData = {
@@ -33,7 +37,7 @@ export default function Header() {
       <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <SignedIn>
           {user?.publicMetadata.registered ? (
-            <UserDropdownMenu />
+            <UserDropdownMenu user={user as any} />
           ) : (
             <Link href="/register">
               <Button>Register</Button>
@@ -51,7 +55,13 @@ export default function Header() {
   );
 }
 
-function UserDropdownMenu() {
+function UserDropdownMenu({
+  user,
+}: {
+  user: { publicMetadata: { recordId: string; registered: boolean } };
+}) {
+  const { signOut } = useClerk();
+  const router = useRouter();
   return (
     <DropdownMenu>
       {/* TODO: Update dropdown menu options */}
@@ -64,9 +74,22 @@ function UserDropdownMenu() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Button
+            onClick={async () => {
+              await deRegister(user.publicMetadata.recordId)
+              signOut().then(() => {
+                router.push("/");
+                router.refresh();
+              });
+            }}
+            variant="destructive"
+          >
+            Deregister
+          </Button>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

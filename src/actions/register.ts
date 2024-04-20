@@ -1,13 +1,11 @@
 "use server";
 import { prisma } from "@/db/client";
-import {
-  registrationFormSchemaType,
-} from "@/lib/formValidation";
+import { registrationFormSchemaType } from "@/lib/formValidation";
 import { clerkClient, currentUser } from "@clerk/nextjs";
 
 export async function register(formData: registrationFormSchemaType) {
   // TODO: Server side error handling and communicate to the client
-  console.log("Registering user")
+  console.log("Registering user");
   const user = await currentUser();
   if (!user) {
     console.log("User is not authenticated");
@@ -22,18 +20,48 @@ export async function register(formData: registrationFormSchemaType) {
         name: formData.name,
         address: formData.address,
         publicKey: wallet,
-        email: formData.email
-      }
-    }).catch(err => console.error("Error while createing actor: ", err))
+        email: formData.email,
+      },
+    });
+    console.log(actor);
     await clerkClient.users.updateUserMetadata(user.id, {
       publicMetadata: {
         registered: true,
         recordId: actor?.id,
         actorType: formData.type,
       },
-    }).catch(err => console.error("Error while post user metadata: ", err));
+    });
   } catch (err) {
     console.error("Error while creating actor, ", err);
   }
+
+  return { success: true };
 }
 
+export async function getCatalogProductById(id: string) {
+  try {
+    const data = await prisma.catalog.findUnique({
+      where: {
+        id: id
+      }
+    })
+    return data
+  } catch(err){
+    console.error("Error while getting data")
+    return null
+  }
+}
+
+export async function deRegister(userId: string) {
+  try {
+    await prisma.actor.delete({
+      where: {
+        id: userId,
+      },
+    });
+    const user = await currentUser();
+    clerkClient.users.deleteUser(user!.id);
+  } catch (err) {
+    console.error("Error while deleting user: ", err);
+  }
+}

@@ -9,15 +9,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("SUPABASE_URL")
-  directUrl = env("SUPABASE_DIRECT_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Actor {
   id             String    @id @default(uuid())
   name           String
-  actorType      ActorType
+  actorType      String
   address        String
   publicKey      String    @unique
   email          String    @unique
@@ -29,7 +28,7 @@ model Actor {
 model Catalog {
   id             String    @id @default(uuid())
   name           String
-  category       Category
+  category       String
   listedProducts Product[]
   discription    String
   msp            Float
@@ -41,7 +40,7 @@ model Product {
   id              String   @id @default(uuid())
   discrption      String
   name            String
-  category        Category
+  category        String
   dateOfHarvest   DateTime
   isAvialable     Boolean
   price           Float
@@ -56,15 +55,3 @@ model Product {
   updatedAt       DateTime @updatedAt
 }
 
-enum Category {
-  FRUITS
-  VEGETABLES
-  GRAINS
-}
-
-enum ActorType {
-  FARMER
-  RETAILER
-  PROCESSOR
-  DISTRIBUTOR
-}

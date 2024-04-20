@@ -2,6 +2,7 @@
 
 import { prisma } from "@/db/client";
 import { currentUser } from "@clerk/nextjs";
+import { faker } from "@faker-js/faker";
 
 export async function createProductAction(
   formData: any,
@@ -25,26 +26,19 @@ export async function createProductAction(
   // TODO: do form validation
 
   try {
-    const catalog = await prisma.catalog
-      .findUnique({
-        where: {
-          id: formData.get("productId"),
-        },
-      })
-      .catch((err) => console.log("Error while fetching category: ", err));
     // TODO: add contract id to product register
     const productList = await prisma.product.create({
       data: {
         discrption: formData.get("discription"),
-        category: catalog!.category,
+        category: formData.get("category"),
         dateOfHarvest: date,
         price: parseFloat(formData.get("price")),
         quantity: parseInt(formData.get("stock")),
-        contractId: "testing",
+        contractId: faker.string.uuid(),
         ownerId: userRecordId as string,
-        catalogId: catalog!.id,
+        catalogId: formData.get("productId"),
         isAvialable: false,
-        name: catalog!.name,
+        name: formData.get("name"),
         imageUrl: url,
       },
     });
@@ -54,4 +48,3 @@ export async function createProductAction(
     console.log("Error while creating actor: ", err);
   }
 }
-

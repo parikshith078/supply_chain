@@ -21,8 +21,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEdgeStore } from "@/lib/edgeStore";
+import { getCatalogProductById } from "@/actions/register";
 
 export default function CreateProductListing({
   params,
@@ -30,33 +31,46 @@ export default function CreateProductListing({
   params: { product_id: string };
 }) {
   const { edgestore } = useEdgeStore();
+  const [catalogProduct, setCatalogProduct] = useState<any>();
+  useEffect(() => {
+    async function getData() {
+      const data = await getCatalogProductById(params.product_id);
+      if (data) {
+        setCatalogProduct(data);
+      }
+    }
+    getData();
+  }, []);
   const [date, setDate] = useState<Date>();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  if (!catalogProduct) return <h1>Error while fetching data</h1>;
   return (
     // TODO: Handle form validation
     <Card className="mx-auto max-w-sm my-auto">
       <CardHeader>
-        <CardTitle className="text-xl">Create product listing</CardTitle>
-        <CardDescription>
-          Enter your product details and get it listed.
-        </CardDescription>
+        <CardTitle className="text-xl">Name: {catalogProduct.name}</CardTitle>
+        <CardDescription>Category: {catalogProduct.category}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
           className="flex flex-col gap-10"
           action={async (formData: FormData) => {
-            setLoading(true)
             const image = formData.get("image") as File;
             console.log("image from client: ", image);
-            const res = await edgestore.publicFiles.upload({file: image});
-            console.log('image url: ', res.url)
+            const res = await edgestore.publicFiles.upload({ file: image });
+            console.log("image url: ", res.url);
             await createProductAction(formData, date as Date, res.url);
-            setLoading(false)
           }}
         >
           <Label>Description</Label>
           <Textarea name="discription" placeholder="hello here" />
           <Input type="hidden" name="productId" value={params.product_id} />
+          <Input
+            type="hidden"
+            name="category"
+            value={catalogProduct.category}
+          />
+          <Input type="hidden" name="name" value={catalogProduct.name} />
           <Label>Price</Label>
           <Input type="number" name="price" />
           <Label>Total stock</Label>
@@ -84,7 +98,9 @@ export default function CreateProductListing({
             </PopoverContent>
           </Popover>
           <Input accept="image/*" type="file" name="image" />
-          <Button disabled={loading} >Submit</Button>
+          <Button disabled={loading}>
+            {loading ? "Loading..." : "Submit"}
+          </Button>
         </form>
       </CardContent>
     </Card>
