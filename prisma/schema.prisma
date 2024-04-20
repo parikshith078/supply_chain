@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("SUPABASE_URL")
+  directUrl = env("SUPABASE_DIRECT_URL")
+}
+
+model Actor {
+  id             String    @id @default(uuid())
+  name           String
+  actorType      ActorType
+  address        String
+  publicKey      String    @unique
+  email          String    @unique
+  listedProducts Product[]
+  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime  @default(now())
+}
+
+model Catalog {
+  id             String    @id @default(uuid())
+  name           String
+  category       Category
+  listedProducts Product[]
+  discription    String
+  msp            Float
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  discrption      String
+  name            String
+  category        Category
+  dateOfHarvest   DateTime
+  isAvialable     Boolean
+  price           Float
+  quantity        Int
+  imageUrl        String
+  contractId      String   @unique
+  catalogRelation Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  catalogId       String
+  owner           Actor    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum Category {
+  FRUITS
+  VEGETABLES
+  GRAINS
+}
+
+enum ActorType {
+  FARMER
+  RETAILER
+  PROCESSOR
+  DISTRIBUTOR
+}

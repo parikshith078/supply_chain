@@ -1,6 +1,5 @@
 "use client";
 import { Activity, ArrowUpRight, CreditCard, DollarSign } from "lucide-react";
-
 import {
   SignInWithMetamaskButton,
   SignedIn,

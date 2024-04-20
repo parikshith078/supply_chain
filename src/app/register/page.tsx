@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { register } from "@/actions/register";
-import { formSchema, formSchemaType } from "@/lib/formValidation";
+import { registrationFormSchema, registrationFormSchemaType } from "@/lib/formValidation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -38,8 +38,8 @@ import { toast } from "@/components/ui/use-toast";
 export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const form = useForm<formSchemaType>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<registrationFormSchemaType>({
+    resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -105,10 +105,10 @@ export default function RegisterForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="farmer">Farmer</SelectItem>
-                      <SelectItem value="processor">Processor</SelectItem>
-                      <SelectItem value="distributor">Distributor</SelectItem>
-                      <SelectItem value="retailer">Retailer</SelectItem>
+                      <SelectItem value="FARMER">Farmer</SelectItem>
+                      <SelectItem value="PROCESSOR">Processor</SelectItem>
+                      <SelectItem value="DISTRIBUTOR">Distributor</SelectItem>
+                      <SelectItem value="RETAILER">Retailer</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
