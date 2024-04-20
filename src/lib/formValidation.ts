@@ -4,7 +4,7 @@ export const registrationFormSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email(),
   address: z.string().min(5),
-  type: z.enum(["farmer", "processor", "distributor", "retailer"]),
+  type: z.enum(["FARMER", "PROCESSOR", "DISTRIBUTOR", "RETAILER"]),
 });
 export type registrationFormSchemaType = z.infer<typeof registrationFormSchema>;
 
@@ -13,7 +13,7 @@ export const createProductFromScheme = z.object({
   description: z.string().min(2),
   quantity: z.coerce.number().min(1),
   price: z.coerce.number().min(1),
-  fileUrl: z.string(),
+  fileUrl: z.string().url(),
   catalogProductId: z.string(),
   image: z
     .instanceof(FileList)

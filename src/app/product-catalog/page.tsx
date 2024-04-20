@@ -20,41 +20,54 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
-import { ProductCatalogCategoryOptions } from "@/db/pocketbase-type";
-import { getAllCatalogProducts } from "@/db/pocketbase";
+import { prisma } from "@/db/client";
+
+
+async function getAllCatalogProducts() {
+  "use server"
+  const data = prisma.catalog.findMany()
+  return data
+}
+enum Category {
+    FRUITS = "FRUITS",
+    VEGETABLES = "VEGETABLES",
+    GRAINS = "GRAINS"
+}
+
 
 export default async function Dashboard() {
   const data = await getAllCatalogProducts();
   const compiledData = categorizeProducts(data);
+  // const compiledData = categorizeProducts(data);
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs defaultValue={ProductCatalogCategoryOptions["grains."]}>
+        <Tabs defaultValue={Category.GRAINS}>
           {/* TODO: Update tab list */}
           <div className="flex items-center">
             <TabsList>
-              <TabsTrigger value={ProductCatalogCategoryOptions["grains."]}>
+              <TabsTrigger value={Category.GRAINS}>
                 Grains
               </TabsTrigger>
-              <TabsTrigger value={ProductCatalogCategoryOptions.vegetables}>
+              <TabsTrigger value={Category.VEGETABLES}>
                 Vegitables
               </TabsTrigger>
-              <TabsTrigger value={ProductCatalogCategoryOptions.fruits}>
+              <TabsTrigger value={Category.FRUITS}>
                 Fruites
               </TabsTrigger>
             </TabsList>
           </div>
           <TabContentList
-            data={compiledData[ProductCatalogCategoryOptions["grains."]] as any}
-            category={ProductCatalogCategoryOptions["grains."]}
+            data={compiledData[Category.GRAINS] as any}
+            category={Category.GRAINS}
           />
           <TabContentList
-            data={compiledData[ProductCatalogCategoryOptions.fruits] as any}
-            category={ProductCatalogCategoryOptions.fruits}
+            data={compiledData[Category.VEGETABLES] as any}
+            category={Category.VEGETABLES}
           />
           <TabContentList
-            data={compiledData[ProductCatalogCategoryOptions.vegetables] as any}
-            category={ProductCatalogCategoryOptions.vegetables}
+            data={compiledData[Category.FRUITS] as any}
+            category={Category.FRUITS}
           />
         </Tabs>
       </main>
@@ -69,6 +82,13 @@ const TabContentList = ({
   data: { msp: number; id: string; name: string; discription: string }[];
   category: string;
 }) => {
+    //   {
+    //   id: 'adac9a49-4f32-4bcc-b1b9-bc302ba4ddec',
+    //   name: 'Water melones',
+    //   discription: 'testing the water melon',
+    //   msp: 90
+    // }
+
   return (
     <TabsContent value={category}>
       <Card x-chunk="dashboard-06-chunk-0">
@@ -138,43 +158,43 @@ const TabContentList = ({
 
 function categorizeProducts(data: any): { [key: string]: object[] } {
   const categorizedProducts: { [key: string]: object[] } = {
-    "grains.": [],
-    vegetables: [],
-    fruits: [],
+    "GRAINS": [],
+    "VEGETABLES": [],
+    "FRUITS": [],
   };
 
-  data.items.forEach(
-    (item: {
-      category: string;
-      name: string;
-      discription: string;
-      msp: number;
-      id: string;
-    }) => {
-      if (item.category === "grains.") {
-        categorizedProducts["grains."].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          msp: item.msp,
-        });
-      } else if (item.category === "vegetables") {
-        categorizedProducts["vegetables"].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          msp: item.msp,
-        });
-      } else if (item.category === "fruits") {
-        categorizedProducts["fruits"].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          msp: item.msp,
-        });
-      }
-    },
-  );
+  data.forEach((item: {
+    category: string;
+    name: string;
+    discription: string;
+    msp: number;
+    id: string;
+  }) => {
+    const categoryUpperCase = item.category.toUpperCase();
+    if (categoryUpperCase === "GRAINS") {
+      categorizedProducts["GRAINS"].push({
+        id: item.id,
+        name: item.name,
+        discription: item.discription,
+        msp: item.msp,
+      });
+    } else if (categoryUpperCase === "VEGETABLES") {
+      categorizedProducts["VEGETABLES"].push({
+        id: item.id,
+        name: item.name,
+        discription: item.discription,
+        msp: item.msp,
+      });
+    } else if (categoryUpperCase === "FRUITS") {
+      categorizedProducts["FRUITS"].push({
+        id: item.id,
+        name: item.name,
+        discription: item.discription,
+        msp: item.msp,
+      });
+    }
+  });
 
   return categorizedProducts;
 }
+

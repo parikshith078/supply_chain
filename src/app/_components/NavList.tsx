@@ -1,4 +1,3 @@
-import { ActorTypeOptions } from "@/db/pocketbase-type";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, UtensilsCrossed } from "lucide-react";
@@ -8,6 +7,13 @@ type NavItemType = {
   label: string;
   href: string;
 };
+
+enum ActorType {
+  FARMER = "FARMER",
+  PROCESSOR = "PROCESSOR",
+  DISTRIBUTOR = "DISTRIBUTOR",
+  RETAILER = "RETAILER",
+}
 
 const farmerNav: NavItemType[] = [
   {
@@ -49,7 +55,7 @@ const retailerNav: NavItemType[] = [
     href: "/market",
   },
 ];
-export function NavList({ actorType }: { actorType: ActorTypeOptions }) {
+export function NavList({ actorType }: { actorType: ActorType }) {
   return (
     <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
       <Link
@@ -66,22 +72,22 @@ export function NavList({ actorType }: { actorType: ActorTypeOptions }) {
       >
         Dashboard
       </Link>
-      {actorType == ActorTypeOptions.farmer && (
+      {actorType == ActorType.FARMER && (
         <NavItemsList
           styles="text-muted-foreground transition-colors hover:text-foreground"
           navList={farmerNav}
         />
       )}
 
-      {actorType == ActorTypeOptions.retailer && (
+      {actorType == ActorType.RETAILER && (
         <NavItemsList
           styles="text-muted-foreground transition-colors hover:text-foreground"
           navList={retailerNav}
         />
       )}
 
-      {actorType == ActorTypeOptions.distributor ||
-        (actorType == ActorTypeOptions.processor && (
+      {actorType == ActorType.PROCESSOR ||
+        (actorType == ActorType.DISTRIBUTOR && (
           <NavItemsList
             styles="text-muted-foreground transition-colors hover:text-foreground"
             navList={distributorAndProcessorNav}
@@ -91,7 +97,7 @@ export function NavList({ actorType }: { actorType: ActorTypeOptions }) {
   );
 }
 
-export function MobilNavList({ actorType }: { actorType: ActorTypeOptions }) {
+export function MobilNavList({ actorType }: { actorType: ActorType }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -112,22 +118,22 @@ export function MobilNavList({ actorType }: { actorType: ActorTypeOptions }) {
           <Link href="#" className="hover:text-foreground">
             Dashboard
           </Link>
-          {actorType == ActorTypeOptions.farmer && (
+          {actorType == ActorType.FARMER && (
             <NavItemsList
               styles="text-muted-foreground hover:text-foreground"
               navList={farmerNav}
             />
           )}
 
-          {actorType == ActorTypeOptions.retailer && (
+          {actorType == ActorType.RETAILER && (
             <NavItemsList
               styles="text-muted-foreground hover:text-foreground"
               navList={retailerNav}
             />
           )}
 
-          {actorType == ActorTypeOptions.distributor ||
-            (actorType == ActorTypeOptions.processor && (
+          {actorType == ActorType.PROCESSOR ||
+            (actorType == ActorType.DISTRIBUTOR && (
               <NavItemsList
                 styles="text-muted-foreground hover:text-foreground"
                 navList={distributorAndProcessorNav}

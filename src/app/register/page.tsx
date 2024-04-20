@@ -105,10 +105,10 @@ export default function RegisterForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="farmer">Farmer</SelectItem>
-                      <SelectItem value="processor">Processor</SelectItem>
-                      <SelectItem value="distributor">Distributor</SelectItem>
-                      <SelectItem value="retailer">Retailer</SelectItem>
+                      <SelectItem value="FARMER">Farmer</SelectItem>
+                      <SelectItem value="PROCESSOR">Processor</SelectItem>
+                      <SelectItem value="DISTRIBUTOR">Distributor</SelectItem>
+                      <SelectItem value="RETAILER">Retailer</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
