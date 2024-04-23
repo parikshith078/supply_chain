@@ -21,8 +21,8 @@ const farmerNav: NavItemType[] = [
     href: "/inventory",
   },
   {
-    label: "Sales",
-    href: "/received",
+    label: "Transactions",
+    href: "/transactions",
   },
 ];
 
@@ -32,12 +32,8 @@ const distributorAndProcessorNav: NavItemType[] = [
     href: "/inventory",
   },
   {
-    label: "Orders",
-    href: "/placed",
-  },
-  {
-    label: "Sales",
-    href: "/received",
+    label: "Transactions",
+    href: "/transactions",
   },
   {
     label: "Marketplace",
@@ -47,8 +43,8 @@ const distributorAndProcessorNav: NavItemType[] = [
 
 const retailerNav: NavItemType[] = [
   {
-    label: "Orders",
-    href: "/placed",
+    label: "Transactions",
+    href: "/transactions",
   },
   {
     label: "Marketplace",
