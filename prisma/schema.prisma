@@ -46,7 +46,6 @@ model Product {
   price           Float
   quantity        Int
   imageUrl        String
-  contractId      String   @unique
   catalogRelation Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
   catalogId       String
   owner           Actor    @relation(fields: [ownerId], references: [id], onDelete: Cascade)

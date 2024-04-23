@@ -13,6 +13,7 @@ export async function register(formData: registrationFormSchemaType) {
   }
   try {
     const wallet = user.web3Wallets[0].web3Wallet;
+    console.log("wallets: ", user.web3Wallets)
     console.log(wallet);
     const actor = await prisma.actor.create({
       data: {

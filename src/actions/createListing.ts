@@ -2,18 +2,16 @@
 
 import { prisma } from "@/db/client";
 import { currentUser } from "@clerk/nextjs";
-import { faker } from "@faker-js/faker";
 
 export async function createProductAction(
-  formData: any,
+  formData: { price: string; stock: string; discription: string },
   date: Date,
-  url: string,
+  others: { category: string, catelogId: string, name: string }
 ) {
   console.log("Working on createing product...");
   console.log(formData);
-  console.log(formData.get("image"));
+  console.log(others)
   console.log(date.toISOString());
-  console.log(url);
   // console.log(formData.get("name"));
   const user = await currentUser();
   if (!user) {
@@ -29,17 +27,16 @@ export async function createProductAction(
     // TODO: add contract id to product register
     const productList = await prisma.product.create({
       data: {
-        discrption: formData.get("discription"),
-        category: formData.get("category"),
+        discrption: formData.discription,
+        category: others.category,
         dateOfHarvest: date,
-        price: parseFloat(formData.get("price")),
-        quantity: parseInt(formData.get("stock")),
-        contractId: faker.string.uuid(),
+        price: parseFloat(formData.price),
+        quantity: parseInt(formData.stock),
         ownerId: userRecordId as string,
-        catalogId: formData.get("productId"),
+        catalogId: others.catelogId,
         isAvialable: false,
-        name: formData.get("name"),
-        imageUrl: url,
+        name: others.name,
+        imageUrl: "parikshithpalegar",
       },
     });
 
