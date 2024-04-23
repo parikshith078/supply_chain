@@ -66,4 +66,4 @@ node_modules
 /coverage
 /coverage.json
 # remove it after
-hardhat.config.ts
+#hardhat.config.ts
