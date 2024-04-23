@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 contract Market {
   struct Transcation {
@@ -52,10 +52,11 @@ contract Market {
   }
 
   function buyProduct(string memory pid, uint timeStamp) external payable {
-
+    console.log("Entering buy function", pid);
+    console.log("Entering buy timeStamp: ", timeStamp);
     Product storage curr = products[pid];
 
-    require(msg.value >= curr.price);
+    require(msg.value >= curr.price, "Pay more ether...");
     address payable lastOwner = curr.owner;
     bool success = lastOwner.send(msg.value);
     require(success, "Transfer failed");
@@ -67,7 +68,7 @@ contract Market {
       pid,
       lastOwner,
       msg.sender,
-      curr.price,
+      msg.value,
       timeStamp
     );
     transcations.push(newTranscation);

@@ -13,20 +13,20 @@ const ContractABI = tracking.abi;
 const fetchContract = (signerOrProvider: any) =>
   new ethers.Contract(ContractAddress, ContractABI, signerOrProvider);
 
-async function createProduct(index: string, price: string){
-        const contract = fetchContract(val);
-            const ind = await contract.createProduct(
-              ethers.parseUnits("10", 18),
-              index,
-              {
-                gasLimit: 400000,
-              }
-            );
-            await ind.wait();
-            console.log("product index should be 1: ", ind);
-
-}
-// function getEth() {
+// async function createProduct(index: string, price: string){
+//         const contract = fetchContract(val);
+//             const ind = await contract.createProduct(
+//               ethers.parseUnits("10", 18),
+//               index,
+//               {
+//                 gasLimit: 400000,
+//               }
+//             );
+//             await ind.wait();
+//             console.log("product index should be 1: ", ind);
+//
+// }
+// // function getEth() {
 //   const eth = (window as any).ethereum;
 //   if (!eth) throw new Error("Get metamask acc");
 //

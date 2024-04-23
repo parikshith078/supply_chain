@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
@@ -19,26 +20,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
-import { prisma } from "@/db/client";
+import { useEffect, useState } from "react";
+import { getAllProducts } from "@/actions/getData";
 
-
-async function getAllCatalogProducts() {
-  "use server"
-  const data = prisma.catalog.findMany()
-  return data
-}
 enum Category {
-    FRUITS = "FRUITS",
-    VEGETABLES = "VEGETABLES",
-    GRAINS = "GRAINS"
+  FRUITS = "FRUITS",
+  VEGETABLES = "VEGETABLES",
+  GRAINS = "GRAINS",
 }
 
-
-export default async function Dashboard() {
-  // const data = await getAllCatalogProducts();
-  // const compiledData = categorizeProducts(data);
-  // const compiledData = categorizeProducts(data);
+export default function Dashboard() {
+  const [data, setData] = useState<any>(null);
+  useEffect(() => {
+    async function getData() {
+      try {
+        const data = await getAllProducts();
+        const compile = categorizeProducts(data);
+        setData(compile);
+      } catch (err) {
+        console.log("Error while fetching data: ", err);
+      }
+    }
+    getData();
+  }, []);
+  if (data == null) return <h1>Loading...</h1>;
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -46,29 +51,23 @@ export default async function Dashboard() {
           {/* TODO: Update tab list */}
           <div className="flex items-center">
             <TabsList>
-              <TabsTrigger value={Category.GRAINS}>
-                Grains
-              </TabsTrigger>
-              <TabsTrigger value={Category.VEGETABLES}>
-                Vegitables
-              </TabsTrigger>
-              <TabsTrigger value={Category.FRUITS}>
-                Fruites
-              </TabsTrigger>
+              <TabsTrigger value={Category.GRAINS}>Grains</TabsTrigger>
+              <TabsTrigger value={Category.VEGETABLES}>Vegitables</TabsTrigger>
+              <TabsTrigger value={Category.FRUITS}>Fruites</TabsTrigger>
             </TabsList>
           </div>
-          {/* <TabContentList */}
-          {/*   data={compiledData[Category.GRAINS] as any} */}
-          {/*   category={Category.GRAINS} */}
-          {/* /> */}
-          {/* <TabContentList */}
-          {/*   data={compiledData[Category.VEGETABLES] as any} */}
-          {/*   category={Category.VEGETABLES} */}
-          {/* /> */}
-          {/* <TabContentList */}
-          {/*   data={compiledData[Category.FRUITS] as any} */}
-          {/*   category={Category.FRUITS} */}
-          {/* /> */}
+          <TabContentList
+            data={data[Category.GRAINS] as any}
+            category={Category.GRAINS}
+          />
+          <TabContentList
+            data={data[Category.VEGETABLES] as any}
+            category={Category.VEGETABLES}
+          />
+          <TabContentList
+            data={data[Category.FRUITS] as any}
+            category={Category.FRUITS}
+          />
         </Tabs>
       </main>
     </div>
@@ -79,24 +78,24 @@ const TabContentList = ({
   data,
   category,
 }: {
-  data: { msp: number; id: string; name: string; discription: string }[];
+  data: {
+    category: string;
+    name: string;
+    discription: string;
+    dateOfHarvest: Date;
+    price: number;
+    id: string;
+    quantity: number;
+    ownerId: string;
+  }[];
   category: string;
 }) => {
-    //   {
-    //   id: 'adac9a49-4f32-4bcc-b1b9-bc302ba4ddec',
-    //   name: 'Water melones',
-    //   discription: 'testing the water melon',
-    //   msp: 90
-    // }
-
   return (
     <TabsContent value={category}>
       <Card x-chunk="dashboard-06-chunk-0">
         <CardHeader>
-          <CardTitle>Products Catalog</CardTitle>
-          <CardDescription>
-            See all products in your store
-          </CardDescription>
+          <CardTitle>Market Place</CardTitle>
+          <CardDescription>See all products in your store</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -107,14 +106,16 @@ const TabContentList = ({
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead className="hidden md:table-cell">MSP/kg</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Harvest date</TableHead>
+                <TableHead className="hidden md:table-cell">Price/kg</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item: any, id) => (
+              {data.map((item, id) => (
                 <TableRow key={id}>
                   <TableCell className="hidden sm:table-cell">
                     <Image
@@ -127,30 +128,29 @@ const TabContentList = ({
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">
-                      {/* TODO: Fix catagory name */}
-                      {category}
-                    </Badge>
+                    <Badge variant="outline">{category}</Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    ₹{item.msp}
+                    {item.quantity}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item.dateOfHarvest.toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    ETH {item.price}
                   </TableCell>
                   <TableCell>
-                    <Link href={`/add-product-listing/${item.id}`}>
-                      <Button>Add Listing</Button>
-                    </Link>
+                    <Button>Buy</Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter>
-          {/* TODO: Update pagination */}
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-10</strong> of <strong>32</strong> products
-          </div>
-        </CardFooter>
       </Card>
     </TabsContent>
   );
@@ -158,43 +158,56 @@ const TabContentList = ({
 
 function categorizeProducts(data: any): { [key: string]: object[] } {
   const categorizedProducts: { [key: string]: object[] } = {
-    "GRAINS": [],
-    "VEGETABLES": [],
-    "FRUITS": [],
+    GRAINS: [],
+    VEGETABLES: [],
+    FRUITS: [],
   };
 
-  data.forEach((item: {
-    category: string;
-    name: string;
-    discription: string;
-    msp: number;
-    id: string;
-  }) => {
-    const categoryUpperCase = item.category.toUpperCase();
-    if (categoryUpperCase === "GRAINS") {
-      categorizedProducts["GRAINS"].push({
-        id: item.id,
-        name: item.name,
-        discription: item.discription,
-        msp: item.msp,
-      });
-    } else if (categoryUpperCase === "VEGETABLES") {
-      categorizedProducts["VEGETABLES"].push({
-        id: item.id,
-        name: item.name,
-        discription: item.discription,
-        msp: item.msp,
-      });
-    } else if (categoryUpperCase === "FRUITS") {
-      categorizedProducts["FRUITS"].push({
-        id: item.id,
-        name: item.name,
-        discription: item.discription,
-        msp: item.msp,
-      });
+  data.forEach(
+    (item: {
+      category: string;
+      name: string;
+      discription: string;
+      dateOfHarvest: Date;
+      price: number;
+      id: string;
+      quantity: number;
+      ownerId: string;
+    }) => {
+      const categoryUpperCase = item.category.toUpperCase();
+      if (categoryUpperCase === "GRAINS") {
+        categorizedProducts["GRAINS"].push({
+          id: item.id,
+          name: item.name,
+          discription: item.discription,
+          price: item.price,
+          dateOfHarvest: item.dateOfHarvest,
+          quantity: item.quantity,
+          ownerId: item.ownerId,
+        });
+      } else if (categoryUpperCase === "VEGETABLES") {
+        categorizedProducts["VEGETABLES"].push({
+          id: item.id,
+          name: item.name,
+          discription: item.discription,
+          price: item.price,
+          dateOfHarvest: item.dateOfHarvest,
+          quantity: item.quantity,
+          ownerId: item.ownerId,
+        });
+      } else if (categoryUpperCase === "FRUITS") {
+        categorizedProducts["FRUITS"].push({
+          id: item.id,
+          name: item.name,
+          discription: item.discription,
+          price: item.price,
+          dateOfHarvest: item.dateOfHarvest,
+          quantity: item.quantity,
+          ownerId: item.ownerId,
+        });
+      }
     }
-  });
+  );
 
   return categorizedProducts;
 }
-

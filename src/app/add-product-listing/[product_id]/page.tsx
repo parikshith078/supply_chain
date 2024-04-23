@@ -1,8 +1,5 @@
 "use client";
 
-import { ethers } from "ethers";
-// import tracking from "../../../artifacts/contracts/Lock.sol/Lock.json";
-import market from "../../../../artifacts/contracts/Market.sol/Market.json";
 import { createProductAction } from "@/actions/createListing";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -28,48 +25,14 @@ import { useEffect, useState } from "react";
 // import { useEdgeStore } from "@/lib/edgeStore";
 import { getCatalogProductById } from "@/actions/register";
 import { useRouter } from "next/navigation";
+import {
+  buyProductSC,
+  createProductSC,
+  getAllTranscationsSC,
+  getProductInfoSC,
+  getTotalSellsSC,
+} from "@/lib/smartContractsContext";
 
-const ContractAddress = "0xa9742E940B2A71953cE602911E729d1fc61eaa96";
-const ContractABI = market.abi;
-
-//---FETCHING SMART CONTRACT
-const fetchContract = (signerOrProvider: any) =>
-  new ethers.Contract(ContractAddress, ContractABI, signerOrProvider);
-
-async function createProductSC(index: string, price: string) {
-  console.log("starting creating");
-  const provider = new ethers.BrowserProvider((window as any).ethereum);
-  // await provider.send("eth_requestAccounts", []);
-  const signer = await provider.getSigner();
-  const contract = fetchContract(signer);
-  const address = await contract.getAddress();
-  console.log("Address: ", address);
-  const sells = await contract.totalSells();
-  console.log("sells: ", sells);
-  const ind = await contract.createProduct(ethers.parseUnits(price, 18), index);
-  await ind.wait();
-  console.log("product index should be 1: ", ind);
-  // console.logn(data)
-}
-
-async function getProductInfoSC(index: string) {
-  try {
-    const provider = new ethers.BrowserProvider((window as any).ethereum);
-    // await provider.send("eth_requestAccounts", []);
-    const signer = await provider.getSigner();
-    const contract = fetchContract(signer);
-    const address = await contract.getAddress();
-    console.log("Address: ", address);
-    const ind = await contract.getProductInfo(index, {
-      gasLimit: 400000,
-    });
-    console.log("details: ", ind);
-    // await ind.wait();
-    // console.log("product logs : ", ind);
-  } catch (err) {
-    console.log("Error while creating product: ", err);
-  }
-}
 export default function CreateProductListing({
   params,
 }: {
@@ -181,15 +144,19 @@ export default function CreateProductListing({
               e.preventDefault();
               setLoading(true);
               setError(null);
-              if (!date) {
-                setError("Please select date");
-              }
               if (
                 formData.stock == "" ||
                 formData.price == "" ||
                 formData.discription == ""
               ) {
                 setError("Please fill all details");
+                setLoading(false);
+                return;
+              }
+              if (!date) {
+                setError("Please select date");
+                setLoading(false);
+                return;
               }
               console.log(formData);
               console.log(date);
@@ -199,6 +166,7 @@ export default function CreateProductListing({
                   category: catalogProduct.category,
                   name: catalogProduct.name,
                 });
+                console.log("id: ", id)
                 await createProductSC(id!, formData.price);
                 router.push("/");
               } catch (err) {
@@ -211,12 +179,36 @@ export default function CreateProductListing({
             {loading ? "Loading..." : "Submit"}
           </Button>
           <Button
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault();
-              getProductInfoSC("testing");
+              getProductInfoSC("a1821229-b2bc-459d-beb9-845598daae20");
             }}
           >
             Get info
+          </Button>
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              await getAllTranscationsSC();
+            }}
+          >
+            Get all transcations
+          </Button>
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              await buyProductSC("a1821229-b2bc-459d-beb9-845598daae20", new Date().getTime(), "90");
+            }}
+          >
+            test sell
+          </Button>
+          <Button
+            onClick={async (e) => {
+              e.preventDefault();
+              await getTotalSellsSC()
+            }}
+          >
+            get total sells
           </Button>
         </form>
       </CardContent>
