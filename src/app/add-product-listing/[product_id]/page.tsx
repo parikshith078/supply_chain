@@ -1,5 +1,8 @@
 "use client";
 
+import { ethers } from "ethers";
+// import tracking from "../../../artifacts/contracts/Lock.sol/Lock.json";
+import market from "../../../../artifacts/contracts/Market.sol/Market.json";
 import { createProductAction } from "@/actions/createListing";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -26,10 +29,47 @@ import { useEffect, useState } from "react";
 import { getCatalogProductById } from "@/actions/register";
 import { useRouter } from "next/navigation";
 
-// async function handleSumit() {
-//   // await createProductAction(, date as Date, res.url);
-// }
+const ContractAddress = "0xa9742E940B2A71953cE602911E729d1fc61eaa96";
+const ContractABI = market.abi;
 
+//---FETCHING SMART CONTRACT
+const fetchContract = (signerOrProvider: any) =>
+  new ethers.Contract(ContractAddress, ContractABI, signerOrProvider);
+
+async function createProductSC(index: string, price: string) {
+  console.log("starting creating");
+  const provider = new ethers.BrowserProvider((window as any).ethereum);
+  // await provider.send("eth_requestAccounts", []);
+  const signer = await provider.getSigner();
+  const contract = fetchContract(signer);
+  const address = await contract.getAddress();
+  console.log("Address: ", address);
+  const sells = await contract.totalSells();
+  console.log("sells: ", sells);
+  const ind = await contract.createProduct(ethers.parseUnits(price, 18), index);
+  await ind.wait();
+  console.log("product index should be 1: ", ind);
+  // console.logn(data)
+}
+
+async function getProductInfoSC(index: string) {
+  try {
+    const provider = new ethers.BrowserProvider((window as any).ethereum);
+    // await provider.send("eth_requestAccounts", []);
+    const signer = await provider.getSigner();
+    const contract = fetchContract(signer);
+    const address = await contract.getAddress();
+    console.log("Address: ", address);
+    const ind = await contract.getProductInfo(index, {
+      gasLimit: 400000,
+    });
+    console.log("details: ", ind);
+    // await ind.wait();
+    // console.log("product logs : ", ind);
+  } catch (err) {
+    console.log("Error while creating product: ", err);
+  }
+}
 export default function CreateProductListing({
   params,
 }: {
@@ -108,6 +148,7 @@ export default function CreateProductListing({
             type="number"
             name="stock"
           />
+          {/* TODO: Fix date to only select today or past */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -137,6 +178,8 @@ export default function CreateProductListing({
           {/* /> */}
           <Button
             onClick={async (e) => {
+              e.preventDefault();
+              setLoading(true);
               setError(null);
               if (!date) {
                 setError("Please select date");
@@ -148,18 +191,16 @@ export default function CreateProductListing({
               ) {
                 setError("Please fill all details");
               }
-              e.preventDefault();
-              setLoading(true);
               console.log(formData);
               console.log(date);
               try {
-                await createProductAction(formData, date!, {
+                const id = await createProductAction(formData, date!, {
                   catelogId: params.product_id,
                   category: catalogProduct.category,
                   name: catalogProduct.name,
-                }).then(() => {
-                  router.push("/");
                 });
+                await createProductSC(id!, formData.price);
+                router.push("/");
               } catch (err) {
                 console.error("Error while createing: ", err);
               }
@@ -168,6 +209,14 @@ export default function CreateProductListing({
             disabled={loading}
           >
             {loading ? "Loading..." : "Submit"}
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              getProductInfoSC("testing");
+            }}
+          >
+            Get info
           </Button>
         </form>
       </CardContent>

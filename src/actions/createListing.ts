@@ -41,6 +41,7 @@ export async function createProductAction(
     });
 
     console.log(productList);
+    return productList.id
   } catch (err) {
     console.log("Error while creating actor: ", err);
   }
