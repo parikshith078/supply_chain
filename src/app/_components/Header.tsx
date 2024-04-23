@@ -16,12 +16,8 @@ import {
   SignOutButton,
   SignedIn,
   SignedOut,
-  useClerk,
   useUser,
 } from "@clerk/nextjs";
-import { prisma } from "@/db/client";
-import { useRouter } from "next/navigation";
-import { deRegister } from "@/actions/register";
 
 export default function Header() {
   // type UserPublicData = {
@@ -37,7 +33,7 @@ export default function Header() {
       <div className="flex w-full items-center justify-end gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <SignedIn>
           {user?.publicMetadata.registered ? (
-            <UserDropdownMenu user={user as any} />
+            <UserDropdownMenu />
           ) : (
             <Link href="/register">
               <Button>Register</Button>
@@ -55,19 +51,13 @@ export default function Header() {
   );
 }
 
-function UserDropdownMenu({
-  user,
-}: {
-  user: { publicMetadata: { recordId: string; registered: boolean } };
-}) {
-  const { signOut } = useClerk();
-  const router = useRouter();
+function UserDropdownMenu({}: {}) {
   return (
     <DropdownMenu>
       {/* TODO: Update dropdown menu options */}
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
-          <CircleUser className="h-5 w-5" />
+          <CircleUser color="#153448" className="h-5 w-5" />
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
@@ -75,20 +65,8 @@ function UserDropdownMenu({
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Button
-            onClick={async () => {
-              await deRegister(user.publicMetadata.recordId)
-              signOut().then(() => {
-                router.push("/");
-                router.refresh();
-              });
-            }}
-            variant="destructive"
-          >
-            Deregister
-          </Button>
+          <Link href="/profile">Profile</Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <SignOutButton />
         </DropdownMenuItem>
