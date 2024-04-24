@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import market from "../../artifacts/contracts/Market.sol/Market.json";
+import { changeOwnershipToCurrentUser } from "@/actions/createListing";
 const ContractAddress = "0xa9742E940B2A71953cE602911E729d1fc61eaa96";
 const ContractABI = market.abi;
 
@@ -36,7 +37,7 @@ export async function getTotalSellsSC() {
     console.log("Address: ", address);
     const ind = await contract.totalSells();
     console.log("details: ", ind);
-    return ind
+    return ind;
   } catch (err) {
     console.log("Error while creating product: ", err);
   }
@@ -73,7 +74,7 @@ export async function getAllTranscationsSC() {
       amount: ethers.formatEther(item.amount.toString()),
       timeStamp: item.timeStamp,
     }));
-    console.log(allTranscations);
+    return allTranscations;
   } catch (err) {
     console.log("Error while creating product: ", err);
   }
@@ -90,9 +91,13 @@ export async function buyProductSC(
     const contract = fetchContract(signer);
     const address = await contract.getAddress();
     console.log("Address: ", address);
-    const logs = await contract.buyProduct(index, timeStamp, {
-      value: ethers.parseUnits(price, 18),
-    });
+    const logs = await contract
+      .buyProduct(index, timeStamp, {
+        value: ethers.parseUnits(price, 18),
+      })
+      .then(async () => {
+        await changeOwnershipToCurrentUser(index);
+      });
     console.log("details: ", logs);
   } catch (err) {
     console.log("Error while purchasing product: ", err);

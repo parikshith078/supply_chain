@@ -161,14 +161,19 @@ export default function CreateProductListing({
               console.log(formData);
               console.log(date);
               try {
-                const id = await createProductAction(formData, date!, {
+                const res = await createProductAction(formData, date!, {
                   catelogId: params.product_id,
                   category: catalogProduct.category,
                   name: catalogProduct.name,
                 });
-                console.log("id: ", id)
-                await createProductSC(id!, formData.price);
-                router.push("/");
+                if (!res?.success) {
+                  alert("Failed to register");
+                  return;
+                }
+                console.log("id: ", res?.id);
+                await createProductSC(res?.id!, formData.price).then(() => {
+                  router.push("/");
+                });
               } catch (err) {
                 console.error("Error while createing: ", err);
               }
@@ -197,7 +202,11 @@ export default function CreateProductListing({
           <Button
             onClick={async (e) => {
               e.preventDefault();
-              await buyProductSC("a1821229-b2bc-459d-beb9-845598daae20", new Date().getTime(), "90");
+              await buyProductSC(
+                "a1821229-b2bc-459d-beb9-845598daae20",
+                new Date().getTime(),
+                "90"
+              );
             }}
           >
             test sell
@@ -205,7 +214,7 @@ export default function CreateProductListing({
           <Button
             onClick={async (e) => {
               e.preventDefault();
-              await getTotalSellsSC()
+              await getTotalSellsSC();
             }}
           >
             get total sells
