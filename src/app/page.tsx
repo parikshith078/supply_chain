@@ -17,25 +17,28 @@ import {
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { Transation, getTransactions } from "@/lib/generateFakeData";
+// import { Transation, getTransactions } from "@/lib/generateFakeData";
+import { Rows, Transcation } from "./_components/TranscationRows";
+import { getAllTranscationsSC } from "@/lib/smartContractsContext";
 
 export default function Dashboard() {
-  //TODO: Add fetch total revenue and sales data from the smart contract.
-  const [transactionData, setTransactionData] = useState<Transation[]>([]);
-  useEffect( () => {
+  const [transactionData, setTransactionData] = useState<Transcation[] | null>(
+    null
+  );
+  useEffect(() => {
     async function fetchData() {
-      const data = getTransactions(10);
-      // console.log(data);
+      const data = (await getAllTranscationsSC()) as Transcation[];
       setTransactionData(data);
     }
     fetchData();
   }, []);
+  if (transactionData == null) return <h1>Loading...</h1>;
+
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -114,12 +117,7 @@ export default function Dashboard() {
               </TableHeader>
               <TableBody>
                 {transactionData.map((val, id) => (
-                  <Rows
-                    key={id}
-                    id={val.id}
-                    time={val.time}
-                    amount={val.amount}
-                  />
+                  <Rows key={id} {...val} />
                 ))}
               </TableBody>
             </Table>
@@ -129,31 +127,3 @@ export default function Dashboard() {
     </main>
   );
 }
-
-const Rows: React.FC<Transation> = ({ id, time, amount }) => {
-  function formatDateTime(date: Date): string {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      timeZoneName: "short",
-    };
-    return date.toLocaleString("en-US", options);
-  }
-
-  return (
-    <TableRow>
-      <TableCell>
-        <div className="font-medium">{id}</div>
-        <div className="hidden text-sm text-muted-foreground md:inline">
-          {formatDateTime(time)}
-        </div>
-      </TableCell>
-      <TableCell className="text-right">${amount}</TableCell>
-    </TableRow>
-  );
-};

@@ -25,7 +25,7 @@ import { prisma } from "@/db/client";
 
 async function getAllCatalogProducts() {
   "use server"
-  const data = prisma.catalog.findMany()
+  const data = prisma.catalog.findMany().catch(err => console.error("Error while getching catalog products...", err))
   return data
 }
 enum Category {

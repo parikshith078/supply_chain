@@ -51,22 +51,23 @@ export default function Header() {
   );
 }
 
-function UserDropdownMenu() {
+function UserDropdownMenu({}: {}) {
   return (
     <DropdownMenu>
       {/* TODO: Update dropdown menu options */}
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
-          <CircleUser className="h-5 w-5" />
+          <CircleUser color="#153448" className="h-5 w-5" />
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile">Profile</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

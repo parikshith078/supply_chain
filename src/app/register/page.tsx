@@ -30,7 +30,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { register } from "@/actions/register";
-import { registrationFormSchema, registrationFormSchemaType } from "@/lib/formValidation";
+import {
+  registrationFormSchema,
+  registrationFormSchemaType,
+} from "@/lib/formValidation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -60,14 +63,19 @@ export default function RegisterForm() {
           <form
             onSubmit={form.handleSubmit(async (formData) => {
               setLoading(true);
-              await register(formData).then(() => {
-                router.push("/");
-                // TODO: Fix toast not wokring 
-                toast({
-                  title: "Success!",
-                  description: "Successfully registered!",
+              const response = await register(formData)
+                .then(() => {
+                  router.push("/");
+                  // TODO: Fix toast not wokring
+                  toast({
+                    title: "Success!",
+                    description: "Successfully registered!",
+                  });
+                })
+                .catch((err) => {
+                  alert("Error while registering user...");
+                  console.log(err);
                 });
-              });
               setLoading(false);
             })}
             className="space-y-5"

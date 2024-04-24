@@ -2,18 +2,13 @@ import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ActorType } from "@/lib/generalTypes";
 
 type NavItemType = {
   label: string;
   href: string;
 };
 
-enum ActorType {
-  FARMER = "FARMER",
-  PROCESSOR = "PROCESSOR",
-  DISTRIBUTOR = "DISTRIBUTOR",
-  RETAILER = "RETAILER",
-}
 
 const farmerNav: NavItemType[] = [
   {
@@ -21,8 +16,8 @@ const farmerNav: NavItemType[] = [
     href: "/inventory",
   },
   {
-    label: "Sales",
-    href: "/received",
+    label: "Transactions",
+    href: "/transactions",
   },
 ];
 
@@ -32,12 +27,8 @@ const distributorAndProcessorNav: NavItemType[] = [
     href: "/inventory",
   },
   {
-    label: "Orders",
-    href: "/placed",
-  },
-  {
-    label: "Sales",
-    href: "/received",
+    label: "Transactions",
+    href: "/transactions",
   },
   {
     label: "Marketplace",
@@ -47,8 +38,8 @@ const distributorAndProcessorNav: NavItemType[] = [
 
 const retailerNav: NavItemType[] = [
   {
-    label: "Orders",
-    href: "/placed",
+    label: "Transactions",
+    href: "/transactions",
   },
   {
     label: "Marketplace",
