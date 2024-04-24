@@ -59,6 +59,7 @@ export async function changeOwnershipToCurrentUser(productId: string) {
       },
     });
     revalidatePath("/inventory");
+    revalidatePath("/market");
   } catch (err) {
     console.log("Error while changing ownership: ", err);
   }

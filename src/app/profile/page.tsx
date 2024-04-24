@@ -1,12 +1,10 @@
 import { prisma } from "@/db/client";
-import { clerkClient, currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
