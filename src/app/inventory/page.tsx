@@ -1,38 +1,10 @@
-import Image from "next/image";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { prisma } from "@/db/client";
 import { currentUser } from "@clerk/nextjs";
-import TabContentList, {
-  categorizeProducts,
-} from "../_components/TabContentListInventory";
+import TabContentList from "../_components/TabContentListInventory";
+import { ActorType } from "@/lib/generalTypes";
 
 async function getUserOwnedProducts(id: string) {
   "use server";
@@ -44,27 +16,30 @@ async function getUserOwnedProducts(id: string) {
   return data;
 }
 
-enum Category {
-  FRUITS = "FRUITS",
-  VEGETABLES = "VEGETABLES",
-  GRAINS = "GRAINS",
-}
-
 export default async function Dashboard() {
   const user = await currentUser().catch((err) => console.error(err));
   const res = await getUserOwnedProducts(
     user!.publicMetadata.recordId as string
   );
-  const data = categorizeProducts(res);
+  const activeProducts: any[] = [];
+  const inActiveProducts: any[] = [];
+  res.map((item) => {
+    if (item.isAvialable) {
+      activeProducts.push(item);
+    } else {
+      inActiveProducts.push(item);
+    }
+  });
+  if (user?.publicMetadata.actorType == ActorType.RETAILER)
+    return <h1 className="text-center text-3xl font-bold mt-32">Not authorised</h1>;
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs defaultValue={Category.GRAINS}>
+        <Tabs defaultValue="Active">
           <div className="flex items-center justify-between p-5">
             <TabsList>
-              <TabsTrigger value={Category.GRAINS}>Grains</TabsTrigger>
-              <TabsTrigger value={Category.VEGETABLES}>Vegitables</TabsTrigger>
-              <TabsTrigger value={Category.FRUITS}>Fruites</TabsTrigger>
+              <TabsTrigger value="Active">Active</TabsTrigger>
+              <TabsTrigger value="Inactive">Inactive</TabsTrigger>
             </TabsList>
             <Button asChild>
               {user?.publicMetadata.actorType == "FARMER" ? (
@@ -74,18 +49,8 @@ export default async function Dashboard() {
               )}
             </Button>
           </div>
-          <TabContentList
-            data={data[Category.GRAINS] as any}
-            category={Category.GRAINS}
-          />
-          <TabContentList
-            data={data[Category.VEGETABLES] as any}
-            category={Category.VEGETABLES}
-          />
-          <TabContentList
-            data={data[Category.FRUITS] as any}
-            category={Category.FRUITS}
-          />
+          <TabContentList data={activeProducts} status="Active" />
+          <TabContentList data={inActiveProducts} status="Inactive" />
         </Tabs>
       </main>
     </div>

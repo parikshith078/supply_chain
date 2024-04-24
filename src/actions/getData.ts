@@ -2,6 +2,7 @@
 import { prisma } from "@/db/client";
 import { ActorType } from "@/lib/generalTypes";
 import { currentUser } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
 
 export async function getMarketProducts() {
   const user = await currentUser();
@@ -24,10 +25,33 @@ export async function getMarketProducts() {
 
   const data = prisma.product.findMany({
     where: {
-      owner: {
-        actorType: marketType,
-      },
+      AND: [
+        {
+          owner: {
+            actorType: marketType,
+          },
+        },
+        {
+          isAvialable: true,
+        },
+      ],
     },
   });
   return data;
+}
+
+export async function toggleInventory(productId: string, currentStat: boolean) {
+  try {
+    await prisma.product.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        isAvialable: !currentStat,
+      },
+    });
+    revalidatePath("/inventory");
+  } catch (err) {
+    console.error("Error while toggling ", err);
+  }
 }

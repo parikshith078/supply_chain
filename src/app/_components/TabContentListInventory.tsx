@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 
 import { TabsContent } from "@/components/ui/tabs";
@@ -18,9 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toggleInventory } from "@/actions/getData";
+import { useState } from "react";
 export default function TabContentList({
   data,
-  category,
+  status,
 }: {
   data: {
     category: string;
@@ -31,11 +34,13 @@ export default function TabContentList({
     id: string;
     quantity: number;
     ownerId: string;
+    isAvialable: boolean;
   }[];
-  category: string;
+  status: string;
 }) {
+  const [loading, setLoding] = useState(false)
   return (
-    <TabsContent value={category}>
+    <TabsContent value={status}>
       <Card x-chunk="dashboard-06-chunk-0">
         <CardHeader>
           <CardTitle>Inventory</CardTitle>
@@ -72,7 +77,7 @@ export default function TabContentList({
                   </TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{category}</Badge>
+                    <Badge variant="outline">{status}</Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {item.quantity}
@@ -88,7 +93,11 @@ export default function TabContentList({
                     ETH {item.price}
                   </TableCell>
                   <TableCell>
-                    <Button>Toggle</Button>
+                    <Button onClick={async ()=>{
+                      setLoding(true)
+                      await toggleInventory(item.id, item.isAvialable)
+                      setLoding(false)
+                    }} disabled={loading}>{loading ? "Toggle." : "Toggle"}</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -98,60 +107,4 @@ export default function TabContentList({
       </Card>
     </TabsContent>
   );
-}
-
-export function categorizeProducts(data: any): { [key: string]: object[] } {
-  const categorizedProducts: { [key: string]: object[] } = {
-    GRAINS: [],
-    VEGETABLES: [],
-    FRUITS: [],
-  };
-
-  data.forEach(
-    (item: {
-      category: string;
-      name: string;
-      discription: string;
-      dateOfHarvest: Date;
-      price: number;
-      id: string;
-      quantity: number;
-      ownerId: string;
-    }) => {
-      const categoryUpperCase = item.category.toUpperCase();
-      if (categoryUpperCase === "GRAINS") {
-        categorizedProducts["GRAINS"].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          price: item.price,
-          dateOfHarvest: item.dateOfHarvest,
-          quantity: item.quantity,
-          ownerId: item.ownerId,
-        });
-      } else if (categoryUpperCase === "VEGETABLES") {
-        categorizedProducts["VEGETABLES"].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          price: item.price,
-          dateOfHarvest: item.dateOfHarvest,
-          quantity: item.quantity,
-          ownerId: item.ownerId,
-        });
-      } else if (categoryUpperCase === "FRUITS") {
-        categorizedProducts["FRUITS"].push({
-          id: item.id,
-          name: item.name,
-          discription: item.discription,
-          price: item.price,
-          dateOfHarvest: item.dateOfHarvest,
-          quantity: item.quantity,
-          ownerId: item.ownerId,
-        });
-      }
-    }
-  );
-
-  return categorizedProducts;
 }

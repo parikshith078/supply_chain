@@ -35,7 +35,7 @@ export async function createProductAction(
         quantity: parseInt(formData.stock),
         ownerId: userRecordId as string,
         catalogId: others.catelogId,
-        isAvialable: false,
+        isAvialable: true,
         name: others.name,
         imageUrl: "parikshithpalegar",
       },
