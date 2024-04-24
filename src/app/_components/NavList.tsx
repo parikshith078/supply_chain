@@ -2,18 +2,13 @@ import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ActorType } from "@/lib/generalTypes";
 
 type NavItemType = {
   label: string;
   href: string;
 };
 
-enum ActorType {
-  FARMER = "FARMER",
-  PROCESSOR = "PROCESSOR",
-  DISTRIBUTOR = "DISTRIBUTOR",
-  RETAILER = "RETAILER",
-}
 
 const farmerNav: NavItemType[] = [
   {

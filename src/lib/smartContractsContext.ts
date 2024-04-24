@@ -66,7 +66,7 @@ export async function getAllTranscationsSC() {
     const address = await contract.getAddress();
     console.log("Address: ", address);
     const ind = await contract.getAllTranscation();
-    // console.log("details: ", ind);
+    console.log("details: ", ind);
     const allTranscations = ind.map((item: any) => ({
       productId: item.productId,
       seller: item.sellerAddress,
@@ -76,7 +76,7 @@ export async function getAllTranscationsSC() {
     }));
     return allTranscations;
   } catch (err) {
-    console.log("Error while creating product: ", err);
+    console.log("Error while fetching trascations product: ", err);
   }
 }
 

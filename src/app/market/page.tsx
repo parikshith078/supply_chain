@@ -1,9 +1,11 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
-import { getAllProducts } from "@/actions/getData";
-import TabContentList, { categorizeProducts } from "../_components/TabContentList";
+import { getMarketProducts } from "@/actions/getData";
+import TabContentList, {
+  categorizeProducts,
+} from "../_components/TabContentList";
 
 enum Category {
   FRUITS = "FRUITS",
@@ -16,7 +18,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function getData() {
       try {
-        const data = await getAllProducts();
+        const data = await getMarketProducts();
         const compile = categorizeProducts(data);
         setData(compile);
       } catch (err) {
@@ -55,4 +57,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
