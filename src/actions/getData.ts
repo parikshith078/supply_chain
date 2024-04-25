@@ -55,3 +55,22 @@ export async function toggleInventory(productId: string, currentStat: boolean) {
     console.error("Error while toggling ", err);
   }
 }
+
+export async function getOwnerDetails(actorId: string) {
+  try {
+    const data = await prisma.actor.findUnique({
+      where: {
+        id: actorId,
+      },
+    });
+    return {
+      ok: true,
+      address: data?.address,
+      publicKey: data?.publicKey,
+      actoryType: data?.actorType,
+    };
+  } catch (e) {
+    console.error("Error while fetching product data :", e);
+    return { ok: false };
+  }
+}
