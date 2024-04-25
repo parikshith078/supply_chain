@@ -13,7 +13,7 @@ export async function register(formData: registrationFormSchemaType) {
   }
   try {
     const wallet = user.web3Wallets[0].web3Wallet;
-    console.log("wallets: ", user.web3Wallets)
+    console.log("wallets: ", user.web3Wallets);
     console.log(wallet);
     const actor = await prisma.actor.create({
       data: {
@@ -43,13 +43,13 @@ export async function getCatalogProductById(id: string) {
   try {
     const data = await prisma.catalog.findUnique({
       where: {
-        id: id
-      }
-    })
-    return data
-  } catch(err){
-    console.error("Error while getting data")
-    return null
+        id: id,
+      },
+    });
+    return data;
+  } catch (err) {
+    console.error("Error while getting data");
+    return null;
   }
 }
 
@@ -65,4 +65,12 @@ export async function deRegister(userId: string) {
   } catch (err) {
     console.error("Error while deleting user: ", err);
   }
+}
+
+export async function deleteProductbyId(pid: string) {
+  await prisma.product.delete({
+    where: {
+      id: pid,
+    },
+  });
 }

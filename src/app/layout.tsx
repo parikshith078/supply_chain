@@ -14,7 +14,6 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-// TODO: change metadata
 export const metadata: Metadata = {
   title: "Fork to Farm",
   description: "Supply chain powered by smart contract",

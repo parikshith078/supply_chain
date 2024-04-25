@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { buyProductSC } from "@/lib/smartContractsContext";
+import { useRouter } from "next/navigation";
 export default function TabContentList({
   data,
   category,
@@ -36,6 +37,7 @@ export default function TabContentList({
   }[];
   category: string;
 }) {
+  const router = useRouter();
   return (
     <TabsContent value={category}>
       <Card x-chunk="dashboard-06-chunk-0">
@@ -62,7 +64,13 @@ export default function TabContentList({
             </TableHeader>
             <TableBody>
               {data.map((item, id) => (
-                <TableRow key={id}>
+                <TableRow
+                  className="hover:cursor-pointer"
+                  onClick={() => {
+                    router.push(`/market/${item.id}`);
+                  }}
+                  key={id}
+                >
                   <TableCell className="hidden sm:table-cell">
                     <Image
                       alt="Product image"

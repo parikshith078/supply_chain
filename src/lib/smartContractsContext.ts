@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import market from "../../artifacts/contracts/Market.sol/Market.json";
 import { changeOwnershipToCurrentUser } from "@/actions/createListing";
+import { TranscationTypeSC } from "@/lib/tracking";
 const ContractAddress = "0xa9742E940B2A71953cE602911E729d1fc61eaa96";
 const ContractABI = market.abi;
 
@@ -35,9 +36,9 @@ export async function getTotalSellsSC() {
     const contract = fetchContract(signer);
     const address = await contract.getAddress();
     console.log("Address: ", address);
-    const ind = await contract.totalSells();
-    console.log("details: ", ind);
-    return ind;
+    const sells = await contract.totalSells();
+    console.log("details: ", sells);
+    return sells.toString() as string;
   } catch (err) {
     console.log("Error while creating product: ", err);
   }
@@ -72,14 +73,27 @@ export async function getAllTranscationsSC() {
       seller: item.sellerAddress,
       buyyer: item.buyyerAddress,
       amount: ethers.formatEther(item.amount.toString()),
-      timeStamp: item.timeStamp,
+      timeStamp: Number(item.timeStamp),
     }));
-    return allTranscations;
+    return allTranscations as TranscationTypeSC[];
   } catch (err) {
     console.log("Error while fetching trascations product: ", err);
   }
 }
 
+export function formatDateTime(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    timeZoneName: "short",
+  };
+  return date.toLocaleString("en-US", options);
+}
 export async function buyProductSC(
   index: string,
   timeStamp: number,

@@ -1,10 +1,5 @@
 import { faker } from "@faker-js/faker";
 
-export type Transation = {
-  id: string;
-  time: Date;
-  amount: string;
-};
 
 const getRandomTransaction = () => {
   return {

@@ -1,8 +1,7 @@
 import { authMiddleware } from "@clerk/nextjs";
 
-// TODO: Update public routes
 export default authMiddleware({
-  publicRoutes: ["/", "/contact", "/about", "/api/edgestore/init"],
+  publicRoutes: ["/", "/contact", "/about", "/api/edgestore/init", "/market/:path+"],
 });
 
 export const config = {

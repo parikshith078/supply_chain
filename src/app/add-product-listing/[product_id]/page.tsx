@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 // import { useEdgeStore } from "@/lib/edgeStore";
-import { getCatalogProductById } from "@/actions/register";
+import { deleteProductbyId, getCatalogProductById } from "@/actions/register";
 import { useRouter } from "next/navigation";
 import {
   buyProductSC,
@@ -60,7 +60,6 @@ export default function CreateProductListing({
     async function getData() {
       const data = await getCatalogProductById(params.product_id);
       if (data) {
-        // TODO: Add transcation fetch from smart contract
         setCatalogProduct(data);
       }
     }
@@ -70,7 +69,6 @@ export default function CreateProductListing({
   const [loading, setLoading] = useState(false);
   if (!catalogProduct) return <h1>Error while fetching data</h1>;
   return (
-    // TODO: Handle form validation
     <Card className="mx-auto max-w-sm my-auto">
       <CardHeader>
         <CardTitle className="text-xl">Name: {catalogProduct.name}</CardTitle>
@@ -104,7 +102,7 @@ export default function CreateProductListing({
             type="number"
             name="price"
           />
-          <Label>Total stock</Label>
+          <Label htmlFor="stock" >Total stock</Label>
           <Input
             value={formData.stock}
             onChange={handleInputChange}
@@ -112,6 +110,7 @@ export default function CreateProductListing({
             name="stock"
           />
           {/* TODO: Fix date to only select today or past */}
+          <Label>Date of harvest</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -134,11 +133,6 @@ export default function CreateProductListing({
               />
             </PopoverContent>
           </Popover>
-          {/* <Input */}
-          {/*   accept="image/*" */}
-          {/*   type="file" */}
-          {/*   name="image" */}
-          {/* /> */}
           <Button
             onClick={async (e) => {
               e.preventDefault();
@@ -171,9 +165,14 @@ export default function CreateProductListing({
                   return;
                 }
                 console.log("id: ", res?.id);
-                await createProductSC(res?.id!, formData.price).then(() => {
-                  router.push("/");
-                });
+                await createProductSC(res?.id!, formData.price)
+                  .then(() => {
+                    router.push("/");
+                  })
+                  .catch(async (err) => {
+                    await deleteProductbyId(res.id!);
+                    console.log(err);
+                  });
               } catch (err) {
                 console.error("Error while createing: ", err);
               }
@@ -182,42 +181,6 @@ export default function CreateProductListing({
             disabled={loading}
           >
             {loading ? "Loading..." : "Submit"}
-          </Button>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              getProductInfoSC("a1821229-b2bc-459d-beb9-845598daae20");
-            }}
-          >
-            Get info
-          </Button>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              await getAllTranscationsSC();
-            }}
-          >
-            Get all transcations
-          </Button>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              await buyProductSC(
-                "a1821229-b2bc-459d-beb9-845598daae20",
-                new Date().getTime(),
-                "90"
-              );
-            }}
-          >
-            test sell
-          </Button>
-          <Button
-            onClick={async (e) => {
-              e.preventDefault();
-              await getTotalSellsSC();
-            }}
-          >
-            get total sells
           </Button>
         </form>
       </CardContent>

@@ -32,7 +32,6 @@ export default function Dashboard() {
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue={Category.GRAINS}>
-          {/* TODO: Update tab list */}
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value={Category.GRAINS}>Grains</TabsTrigger>

@@ -25,6 +25,7 @@
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
+    "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toast": "^1.1.5",
@@ -75,7 +76,6 @@
     "tailwindcss": "^3.3.0",
     "ts-node": ">=8.0.0",
     "typechain": "^8.3.0",
-    "typescript": "^5.4.4",
-    "vitest": "^1.4.0"
+    "typescript": "^5.4.4"
   }
 }
