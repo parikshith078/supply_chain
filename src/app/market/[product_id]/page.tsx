@@ -18,6 +18,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { getOwnerDetailsById, getProductDetailsById } from "@/actions/getData";
 import ShowTracking from "@/app/_components/ShowTracking";
 import { buyProductSC } from "@/lib/smartContractsContext";
+import { useUser } from "@clerk/nextjs";
+import { ActorType } from "@/lib/generalTypes";
 
 type Response = {
   id: string;
@@ -58,6 +60,8 @@ export default function Dashboard({
   const [ownerData, setOwerData] = useState<undefined | OwnerDetailsType>(
     undefined
   );
+
+  const { user } = useUser();
   useEffect(() => {
     async function getData() {
       const res = await getProductDetailsById(params.product_id);
@@ -225,6 +229,17 @@ export default function Dashboard({
                         {productData && (
                           <Button
                             onClick={async () => {
+                              if (!user) {
+                                alert("Not Authorised");
+                                return;
+                              }
+                              if (
+                                user.publicMetadata.actorType ==
+                                ActorType.RETAILER
+                              ) {
+                                alert("Not Authorised");
+                                return;
+                              }
                               try {
                                 await buyProductSC(
                                   productData?.id,
