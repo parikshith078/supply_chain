@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import error from "next/error";
@@ -60,6 +60,8 @@ export default function Dashboard({
   const [ownerData, setOwerData] = useState<undefined | OwnerDetailsType>(
     undefined
   );
+
+  const router = useRouter();
 
   const { user } = useUser();
   useEffect(() => {
@@ -250,6 +252,7 @@ export default function Dashboard({
                                     description:
                                       "Your purchase has been confirmed.",
                                   });
+                                  router.push("/inventory");
                                 });
                               } catch (e) {
                                 console.error("Error while buying :", e);

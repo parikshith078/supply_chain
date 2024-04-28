@@ -2,6 +2,7 @@
 import { prisma } from "@/db/client";
 import { registrationFormSchemaType } from "@/lib/formValidation";
 import { clerkClient, currentUser } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
 
 export async function register(formData: registrationFormSchemaType) {
   // TODO: Server side error handling and communicate to the client
@@ -32,6 +33,7 @@ export async function register(formData: registrationFormSchemaType) {
         actorType: formData.type,
       },
     });
+    revalidatePath("/");
   } catch (err) {
     console.error("Error while creating actor, ", err);
   }
