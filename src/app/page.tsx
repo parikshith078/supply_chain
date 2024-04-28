@@ -22,20 +22,66 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-// import { Transation, getTransactions } from "@/lib/generateFakeData";
-import { Rows, Transcation } from "./_components/TranscationRows";
-import { getAllTranscationsSC } from "@/lib/smartContractsContext";
+import { Rows } from "./_components/TranscationRows";
+import {
+  getAllTranscationsSC,
+  getTotalSellsSC,
+} from "@/lib/smartContractsContext";
+import { TranscationTypeSC } from "@/lib/tracking";
+import { convertWeiToEth } from "@/lib/utils";
+import { getNumberUsers } from "@/actions/getData";
 
 export default function Dashboard() {
-  const [transactionData, setTransactionData] = useState<Transcation[] | null>(
-    null
-  );
+  const [transactionData, setTransactionData] = useState<
+    TranscationTypeSC[] | null
+  >(null);
+  const [totalSells, setSells] = useState<undefined | string>("");
+  const [numberOfUser, setUsers] = useState<number | undefined>(0);
   useEffect(() => {
     async function fetchData() {
-      const data = (await getAllTranscationsSC()) as Transcation[];
-      setTransactionData(data);
+      try {
+        const data = await getAllTranscationsSC();
+        if (!data) {
+          console.error("Error while fetching transcations");
+          setTransactionData([]);
+          return;
+        }
+        setTransactionData(data);
+      } catch (e) {
+        console.error("Error while fetching: ", e);
+      }
     }
+    async function fetchSellsData() {
+      try {
+        const data = await getTotalSellsSC();
+        console.log("data", data);
+        console.log(typeof data);
+        if (data == undefined) {
+          console.error("Error while fetching transcations");
+          return;
+        }
+        setSells(data);
+      } catch (e) {
+        console.error("Error while fetching: ", e);
+      }
+    }
+    async function fetchNumberUser() {
+      try {
+        const data = await getNumberUsers();
+        console.log("data", data);
+        console.log(typeof data);
+        if (!data.ok) {
+          console.error("Error while fetching transcations");
+          return;
+        }
+        setUsers(data.count);
+      } catch (e) {
+        console.error("Error while fetching: ", e);
+      }
+    }
+    fetchSellsData();
     fetchData();
+    fetchNumberUser()
   }, []);
   if (transactionData == null) return <h1>Loading...</h1>;
 
@@ -44,11 +90,13 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card x-chunk="dashboard-01-chunk-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Sales</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">
+              ETH {convertWeiToEth(totalSells!)}
+            </div>
             <p className="text-xs text-muted-foreground">
               +20.1% from last month
             </p>
@@ -56,11 +104,11 @@ export default function Dashboard() {
         </Card>
         <Card x-chunk="dashboard-01-chunk-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
+            <CardTitle className="text-sm font-medium">Transcations</CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
+            <div className="text-2xl font-bold">{transactionData.length}</div>
             <p className="text-xs text-muted-foreground">
               +19% from last month
             </p>
@@ -68,13 +116,13 @@ export default function Dashboard() {
         </Card>
         <Card x-chunk="dashboard-01-chunk-3">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+573</div>
+            <div className="text-2xl font-bold">{numberOfUser}</div>
             <p className="text-xs text-muted-foreground">
-              +201 since last hour
+              +21 since last hour
             </p>
           </CardContent>
         </Card>
@@ -88,14 +136,9 @@ export default function Dashboard() {
                 Recent transactions on the network.
               </CardDescription>
             </div>
-            {/*TODO: Add a action button here */}
             <SignedIn>
               <Button asChild className="ml-auto gap-1">
                 <SignOutButton />
-                {/* <Link href="/orders"> */}
-                {/*   See orders */}
-                {/*   {/* <ArrowUpRight className="h-4 w-4" /> */}
-                {/* </Link> */}
               </Button>
             </SignedIn>
             <SignedOut>

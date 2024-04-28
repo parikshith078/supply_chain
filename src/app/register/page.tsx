@@ -66,7 +66,6 @@ export default function RegisterForm() {
               const response = await register(formData)
                 .then(() => {
                   router.push("/");
-                  // TODO: Fix toast not wokring
                   toast({
                     title: "Success!",
                     description: "Successfully registered!",

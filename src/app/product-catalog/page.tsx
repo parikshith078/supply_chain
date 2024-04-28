@@ -43,7 +43,6 @@ export default async function Dashboard() {
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue={Category.GRAINS}>
-          {/* TODO: Update tab list */}
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value={Category.GRAINS}>
@@ -128,7 +127,6 @@ const TabContentList = ({
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {/* TODO: Fix catagory name */}
                       {category}
                     </Badge>
                   </TableCell>
@@ -145,12 +143,6 @@ const TabContentList = ({
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter>
-          {/* TODO: Update pagination */}
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-10</strong> of <strong>32</strong> products
-          </div>
-        </CardFooter>
       </Card>
     </TabsContent>
   );

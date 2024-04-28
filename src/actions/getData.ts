@@ -55,3 +55,68 @@ export async function toggleInventory(productId: string, currentStat: boolean) {
     console.error("Error while toggling ", err);
   }
 }
+
+export async function getProductDetailsById(productId: string) {
+  try {
+    const data = await prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+    return data;
+  } catch (err) {
+    console.error("Error while toggling ", err);
+  }
+}
+
+export async function getNumberUsers() {
+  try {
+    const count = await prisma.actor.count();
+    return { ok: true, count };
+  } catch (e) {
+    console.error("Error while fetching user data :", e);
+    return {ok: false}
+  }
+}
+
+export async function getOwnerDetailsByPublicKey(publicKey: string) {
+  console.log("Got seller id in getowner: ", publicKey.trim());
+  try {
+    const data = await prisma.actor.findFirst({
+      where: {
+        publicKey: {
+          contains: publicKey.trim(),
+        },
+      },
+    });
+    console.log("owner data: ", data);
+    return {
+      ok: true,
+      address: data?.address,
+      publicKey: data?.publicKey,
+      actoryType: data?.actorType,
+    };
+  } catch (e) {
+    console.error("Error while fetching product data :", e);
+    return { ok: false };
+  }
+}
+
+export async function getOwnerDetailsById(id: string) {
+  console.log("Got seller id in getowner: ", id.trim());
+  try {
+    const data = await prisma.actor.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    console.log("owner data: ", data);
+    return {
+      ok: true,
+      data,
+    };
+  } catch (e) {
+    console.error("Error while fetching owner data :", e);
+    return { ok: false };
+  }
+}

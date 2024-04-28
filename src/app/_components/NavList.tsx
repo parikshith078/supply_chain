@@ -9,15 +9,10 @@ type NavItemType = {
   href: string;
 };
 
-
 const farmerNav: NavItemType[] = [
   {
     label: "Inventory",
     href: "/inventory",
-  },
-  {
-    label: "Transactions",
-    href: "/transactions",
   },
 ];
 
@@ -27,20 +22,12 @@ const distributorAndProcessorNav: NavItemType[] = [
     href: "/inventory",
   },
   {
-    label: "Transactions",
-    href: "/transactions",
-  },
-  {
     label: "Marketplace",
     href: "/market",
   },
 ];
 
 const retailerNav: NavItemType[] = [
-  {
-    label: "Transactions",
-    href: "/transactions",
-  },
   {
     label: "Marketplace",
     href: "/market",

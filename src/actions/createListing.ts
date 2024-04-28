@@ -22,10 +22,8 @@ export async function createProductAction(
     return { success: false };
   }
   console.log(userRecordId);
-  // TODO: do form validation
 
   try {
-    // TODO: add contract id to product register
     const productList = await prisma.product.create({
       data: {
         discrption: formData.discription,

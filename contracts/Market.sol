@@ -43,14 +43,6 @@ contract Market {
     emit ProductCreated(productId, msg.sender);
   }
 
-  function getAllTranscation() external view returns (Transcation[] memory) {
-    return transcations;
-  }
-
-  function getProductInfo(string memory productId) external view returns (Product memory) {
-    return products[productId];
-  }
-
   function buyProduct(string memory pid, uint timeStamp) external payable {
     console.log("Entering buy function", pid);
     console.log("Entering buy timeStamp: ", timeStamp);
@@ -80,5 +72,12 @@ contract Market {
       msg.value,
       timeStamp
     );
+  }
+  function getAllTranscation() external view returns (Transcation[] memory) {
+    return transcations;
+  }
+
+  function getProductInfo(string memory productId) external view returns (Product memory) {
+    return products[productId];
   }
 }

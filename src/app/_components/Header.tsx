@@ -54,7 +54,6 @@ export default function Header() {
 function UserDropdownMenu({}: {}) {
   return (
     <DropdownMenu>
-      {/* TODO: Update dropdown menu options */}
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
           <CircleUser color="#153448" className="h-5 w-5" />
