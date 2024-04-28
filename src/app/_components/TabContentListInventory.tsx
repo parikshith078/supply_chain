@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 
 import { TabsContent } from "@/components/ui/tabs";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/table";
 import { toggleInventory } from "@/actions/getData";
 import { useState } from "react";
+import Link from "next/link";
 export default function TabContentList({
   data,
   status,
@@ -38,7 +39,7 @@ export default function TabContentList({
   }[];
   status: string;
 }) {
-  const [loading, setLoding] = useState(false)
+  const [loading, setLoding] = useState(false);
   return (
     <TabsContent value={status}>
       <Card x-chunk="dashboard-06-chunk-0">
@@ -58,6 +59,9 @@ export default function TabContentList({
                 <TableHead>Quantity</TableHead>
                 <TableHead>Harvest date</TableHead>
                 <TableHead className="hidden md:table-cell">Price/kg</TableHead>
+                <TableHead>
+                  <span className="sr-only">Actions</span>
+                </TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -93,11 +97,23 @@ export default function TabContentList({
                     ETH {item.price}
                   </TableCell>
                   <TableCell>
-                    <Button onClick={async ()=>{
-                      setLoding(true)
-                      await toggleInventory(item.id, item.isAvialable)
-                      setLoding(false)
-                    }} disabled={loading}>{loading ? "Toggle." : "Toggle"}</Button>
+                    <Button
+                      onClick={async () => {
+                        setLoding(true);
+                        await toggleInventory(item.id, item.isAvialable);
+                        setLoding(false);
+                      }}
+                      disabled={loading}
+                    >
+                      {loading ? "Toggle..." : "Toggle"}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Link href={`/inventory/${item.id}`}>
+                      <Button variant="outline" disabled={loading}>
+                        Edit
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}

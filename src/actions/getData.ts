@@ -75,7 +75,7 @@ export async function getNumberUsers() {
     return { ok: true, count };
   } catch (e) {
     console.error("Error while fetching user data :", e);
-    return {ok: false}
+    return { ok: false };
   }
 }
 
@@ -102,6 +102,30 @@ export async function getOwnerDetailsByPublicKey(publicKey: string) {
   }
 }
 
+export async function upDateProductData(
+  id: string,
+  data: { discription: string; price: string }
+) {
+  try {
+    console.log("owner data: ", data);
+    const res = await prisma.product.update({
+      where: {
+        id: id,
+      },
+      data: {
+        discrption: data.discription,
+        price: parseFloat(data.price),
+      },
+    });
+    console.log("Price: ", res.price, "dis: ", res.discrption);
+    return {
+      ok: true,
+    };
+  } catch (e) {
+    console.error("Error while updating product info :", e);
+    return { ok: false };
+  }
+}
 export async function getOwnerDetailsById(id: string) {
   console.log("Got seller id in getowner: ", id.trim());
   try {
