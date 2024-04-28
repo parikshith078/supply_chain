@@ -117,6 +117,7 @@ export async function upDateProductData(
         price: parseFloat(data.price),
       },
     });
+    revalidatePath("/inventory");
     console.log("Price: ", res.price, "dis: ", res.discrption);
     return {
       ok: true,

@@ -104,7 +104,9 @@ export default function TabContentList({
                           item.id,
                           new Date().getTime(),
                           item.price.toString()
-                        );
+                        ).then(()=>{
+
+                        })
                       }}
                     >
                       Buy
